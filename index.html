@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Plumbline Labs — Cross-platform advertising measurement</title>
+<meta name="description" content="Plumbline Labs measures advertising performance across Google, Meta, and TikTok against a single source of truth, so budget moves toward what is actually working." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#EAEEF0;
+    --paper-2:#E1E6E9;
+    --ink:#19222A;
+    --ink-panel:#141B22;
+    --slate:#586673;
+    --brass:#B0894F;
+    --brass-deep:#8A6A3A;
+    --rule:#C3CCD2;
+    --spine-x:148px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Inter",system-ui,sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  /* ---- persistent plumb-line spine ---- */
+  .spine{
+    position:fixed;
+    top:0;bottom:0;
+    left:var(--spine-x);
+    width:1px;
+    background:var(--rule);
+    z-index:0;
+    pointer-events:none;
+  }
+  .spine::before{ /* graduated ruler ticks */
+    content:"";
+    position:absolute;
+    top:0;bottom:0;
+    left:0;
+    width:9px;
+    background:repeating-linear-gradient(
+      to bottom,
+      var(--rule) 0, var(--rule) 1px,
+      transparent 1px, transparent 26px
+    );
+  }
+  .spine::after{ /* major ticks */
+    content:"";
+    position:absolute;
+    top:0;bottom:0;
+    left:0;
+    width:17px;
+    background:repeating-linear-gradient(
+      to bottom,
+      var(--rule) 0, var(--rule) 1.5px,
+      transparent 1.5px, transparent 130px
+    );
+    opacity:.7;
+  }
+
+  .wrap{
+    position:relative;
+    z-index:1;
+    padding-left:calc(var(--spine-x) + 56px);
+    padding-right:48px;
+    max-width:1180px;
+  }
+
+  /* ---- hero ---- */
+  header.hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding-top:88px;
+    padding-bottom:72px;
+    position:relative;
+  }
+  .eyebrow{
+    font-family:"Space Mono",monospace;
+    font-size:13px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--brass-deep);
+    margin-bottom:30px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:26px;height:1px;background:var(--brass);
+    display:inline-block;
+  }
+  h1{
+    font-family:"Space Grotesk",sans-serif;
+    font-weight:600;
+    font-size:clamp(2.5rem,6.2vw,4.7rem);
+    line-height:1.02;
+    letter-spacing:-0.025em;
+    max-width:14ch;
+    margin-bottom:30px;
+  }
+  h1 .true{
+    color:var(--brass);
+    font-style:normal;
+    position:relative;
+  }
+  .lede{
+    font-size:clamp(1.05rem,1.7vw,1.32rem);
+    color:var(--slate);
+    max-width:54ch;
+    font-weight:400;
+  }
+  .lede strong{color:var(--ink);font-weight:500;}
+
+  /* plumb bob hanging on the spine in the hero */
+  .bob{
+    position:absolute;
+    left:var(--spine-x);
+    top:max(30vh,210px);
+    transform:translateX(-50%);
+    width:34px;
+    transform-origin:top center;
+    z-index:2;
+    animation:settle 4.2s cubic-bezier(.33,.0,.2,1) 1 both;
+  }
+  .bob svg{display:block;width:100%;height:auto;
+    filter:drop-shadow(0 6px 10px rgba(20,27,34,.18));}
+  .bob-read{
+    position:absolute;
+    left:50%;
+    top:calc(100% + 8px);
+    transform:translateX(-50%);
+    font-family:"Space Mono",monospace;
+    font-size:11px;
+    letter-spacing:.12em;
+    color:var(--brass-deep);
+    white-space:nowrap;
+    opacity:0;
+    animation:fadein 1s ease 3.6s both;
+  }
+  @keyframes settle{
+    0%{transform:translateX(-50%) rotate(15deg);}
+    18%{transform:translateX(-50%) rotate(-11deg);}
+    36%{transform:translateX(-50%) rotate(7deg);}
+    54%{transform:translateX(-50%) rotate(-4deg);}
+    72%{transform:translateX(-50%) rotate(2deg);}
+    88%{transform:translateX(-50%) rotate(-1deg);}
+    100%{transform:translateX(-50%) rotate(0deg);}
+  }
+  @keyframes fadein{to{opacity:1;}}
+
+  /* ---- section scaffolding ---- */
+  section{padding:84px 0;}
+  .section-label{
+    font-family:"Space Mono",monospace;
+    font-size:12px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--slate);
+    margin-bottom:34px;
+    display:flex;align-items:center;gap:12px;
+  }
+  .section-label .idx{color:var(--brass-deep);}
+
+  h2{
+    font-family:"Space Grotesk",sans-serif;
+    font-weight:600;
+    font-size:clamp(1.7rem,3.4vw,2.5rem);
+    letter-spacing:-0.02em;
+    line-height:1.1;
+    max-width:20ch;
+    margin-bottom:18px;
+  }
+  .section-intro{
+    color:var(--slate);
+    font-size:1.1rem;
+    max-width:60ch;
+    margin-bottom:52px;
+  }
+
+  /* capabilities */
+  .caps{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1px;
+    background:var(--rule);
+    border:1px solid var(--rule);
+  }
+  .cap{
+    background:var(--paper);
+    padding:34px 30px 40px;
+  }
+  .cap .num{
+    font-family:"Space Mono",monospace;
+    font-size:12px;
+    color:var(--brass-deep);
+    letter-spacing:.1em;
+    margin-bottom:22px;
+  }
+  .cap h3{
+    font-family:"Space Grotesk",sans-serif;
+    font-weight:600;
+    font-size:1.18rem;
+    letter-spacing:-0.01em;
+    margin-bottom:12px;
+  }
+  .cap p{color:var(--slate);font-size:.98rem;}
+
+  /* approach panel */
+  .approach{
+    background:var(--ink-panel);
+    color:var(--paper);
+    margin-left:calc(-1 * (var(--spine-x) + 56px));
+    margin-right:-48px;
+    padding-left:calc(var(--spine-x) + 56px);
+    padding-right:48px;
+  }
+  .approach .section-label{color:#8995A0;}
+  .approach h2{color:var(--paper);}
+  .approach .body{
+    max-width:62ch;
+    font-size:1.18rem;
+    color:#C4CDD4;
+  }
+  .approach .body p{margin-bottom:20px;}
+  .approach .body strong{color:var(--brass);font-weight:500;}
+  .approach .q{
+    font-family:"Space Grotesk",sans-serif;
+    font-size:clamp(1.3rem,2.4vw,1.7rem);
+    color:var(--paper);
+    font-weight:500;
+    letter-spacing:-0.015em;
+    line-height:1.25;
+    margin-top:36px;
+    padding-left:22px;
+    border-left:2px solid var(--brass);
+    max-width:24ch;
+  }
+
+  /* footer */
+  footer{
+    padding:64px 0 80px;
+    border-top:1px solid var(--rule);
+    display:flex;
+    flex-wrap:wrap;
+    gap:32px;
+    justify-content:space-between;
+    align-items:flex-end;
+  }
+  .f-brand{
+    font-family:"Space Grotesk",sans-serif;
+    font-weight:700;
+    font-size:1.15rem;
+    letter-spacing:-0.01em;
+  }
+  .f-brand span{color:var(--brass);}
+  .f-meta{
+    font-family:"Space Mono",monospace;
+    font-size:12.5px;
+    color:var(--slate);
+    line-height:1.9;
+  }
+  .f-meta a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule);}
+  .f-meta a:hover{border-color:var(--brass);color:var(--brass-deep);}
+  .f-links{display:flex;flex-direction:column;gap:6px;text-align:right;}
+
+  :focus-visible{outline:2px solid var(--brass);outline-offset:3px;}
+
+  @media (max-width:760px){
+    :root{--spine-x:26px;}
+    .wrap{padding-left:calc(var(--spine-x) + 26px);padding-right:24px;}
+    .spine::after{width:11px;}
+    .caps{grid-template-columns:1fr;}
+    .approach{
+      margin-left:calc(-1 * (var(--spine-x) + 26px));
+      margin-right:-24px;
+      padding-left:calc(var(--spine-x) + 26px);
+      padding-right:24px;
+    }
+    .bob{width:28px;top:max(26vh,180px);}
+    footer{flex-direction:column;align-items:flex-start;}
+    .f-links{text-align:left;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    .bob{animation:none;}
+    .bob-read{animation:none;opacity:1;}
+  }
+</style>
+</head>
+<body>
+
+<div class="spine" aria-hidden="true"></div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="bob" aria-hidden="true">
+      <svg viewBox="0 0 34 78" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="brassg" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#C9A463"/>
+            <stop offset="0.5" stop-color="#B0894F"/>
+            <stop offset="1" stop-color="#7E5F34"/>
+          </linearGradient>
+        </defs>
+        <circle cx="17" cy="5" r="3.4" fill="none" stroke="#8A6A3A" stroke-width="1.6"/>
+        <path d="M17 9 L17 16" stroke="#8A6A3A" stroke-width="1.6"/>
+        <path d="M17 16
+                 C 11 18, 6 24, 6 34
+                 C 6 41, 10 47, 17 75
+                 C 24 47, 28 41, 28 34
+                 C 28 24, 23 18, 17 16 Z"
+              fill="url(#brassg)" stroke="#6F5430" stroke-width="0.8"/>
+        <path d="M8.5 30 Q17 34 25.5 30" stroke="#7E5F34" stroke-width="0.7" fill="none" opacity="0.7"/>
+        <path d="M11 21 Q17 19 17 19" stroke="#E4CB97" stroke-width="1.4" fill="none" opacity="0.65" stroke-linecap="round"/>
+      </svg>
+      <div class="bob-read">true&nbsp;vertical</div>
+    </div>
+
+    <p class="eyebrow">Plumbline Labs</p>
+    <h1>One <span class="true">true line</span> across every ad platform.</h1>
+    <p class="lede">Plumbline measures advertising performance across Google, Meta, and TikTok against a <strong>single source of truth</strong> — so budget moves toward what is actually working, not toward whichever platform claims the most credit.</p>
+  </header>
+
+  <section id="product">
+    <div class="section-label"><span class="idx">01</span> What Plumbline does</div>
+    <h2>Three platforms report three different stories. We measure one.</h2>
+    <p class="section-intro">Every ad platform optimizes inside its own walls and grades its own homework. Plumbline sits across all of them and measures performance the same way, every time, against outcomes you own.</p>
+
+    <div class="caps">
+      <div class="cap">
+        <div class="num">/ 01</div>
+        <h3>Measure once, across everything</h3>
+        <p>Spend and outcomes from every platform, normalized to one honest metric instead of three conflicting dashboards.</p>
+      </div>
+      <div class="cap">
+        <div class="num">/ 02</div>
+        <h3>Separate signal from credit</h3>
+        <p>Platforms over-claim the conversions they merely influenced. Plumbline measures incremental lift against your own ground truth.</p>
+      </div>
+      <div class="cap">
+        <div class="num">/ 03</div>
+        <h3>Move budget toward the truth</h3>
+        <p>Allocation follows real cross-platform performance, on a cadence no weekly manual review can match.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="approach" id="approach">
+    <div class="section-label"><span class="idx">02</span> Approach</div>
+    <h2>Built independent, on purpose.</h2>
+    <div class="body">
+      <p>The ad platforms each optimize within their own walls and report their own numbers. None of them is neutral, and none will tell you when a competitor's platform is delivering cheaper results.</p>
+      <p>Plumbline is the layer they structurally can't be: it sits <strong>across</strong> Google, Meta, and TikTok, measurement-first, owned by no one's auction. The discipline underneath it is honest cross-platform measurement — the part the walled gardens have no incentive to build for you.</p>
+      <div class="q">Where does the next dollar do the most good?</div>
+    </div>
+  </section>
+
+  <footer>
+    <div>
+      <div class="f-brand">Plumbline<span>.</span>Labs</div>
+      <div class="f-meta" style="margin-top:10px;">Cross-platform advertising measurement<br/>Austin, Texas</div>
+    </div>
+    <div class="f-links f-meta">
+      <a href="mailto:hello@plumblinelabs.com">hello@plumblinelabs.com</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <span style="color:var(--rule);">© 2026 Plumbline Labs</span>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>
