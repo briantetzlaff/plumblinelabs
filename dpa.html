@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Data Processing Addendum — Plumbline Labs</title>
+<meta name="description" content="How Plumbline Labs processes personal data on behalf of merchants, including customer data from connected e-commerce stores." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#EAEEF0;
+    --ink:#19222A;
+    --slate:#586673;
+    --brass:#B0894F;
+    --brass-deep:#8A6A3A;
+    --rule:#C3CCD2;
+    --spine-x:148px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Inter",system-ui,sans-serif;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .spine{
+    position:fixed;top:0;bottom:0;left:var(--spine-x);
+    width:1px;background:var(--rule);z-index:0;pointer-events:none;
+  }
+  .spine::before{
+    content:"";position:absolute;top:0;bottom:0;left:0;width:9px;
+    background:repeating-linear-gradient(to bottom,
+      var(--rule) 0,var(--rule) 1px,transparent 1px,transparent 26px);
+  }
+  .wrap{
+    position:relative;z-index:1;
+    padding-left:calc(var(--spine-x) + 56px);
+    padding-right:48px;
+    max-width:920px;
+    padding-bottom:96px;
+  }
+  .topbar{
+    padding:30px 0;
+    display:flex;justify-content:space-between;align-items:center;
+    border-bottom:1px solid var(--rule);
+    margin-bottom:56px;
+  }
+  .brand{
+    font-family:"Space Grotesk",sans-serif;font-weight:700;
+    font-size:1.05rem;letter-spacing:-0.01em;text-decoration:none;color:var(--ink);
+  }
+  .brand span{color:var(--brass);}
+  .back{
+    font-family:"Space Mono",monospace;font-size:12.5px;
+    color:var(--slate);text-decoration:none;letter-spacing:.04em;
+  }
+  .back:hover{color:var(--brass-deep);}
+  .doc-label{
+    font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--brass-deep);margin-bottom:18px;
+  }
+  h1{
+    font-family:"Space Grotesk",sans-serif;font-weight:600;
+    font-size:clamp(2rem,4.5vw,3rem);letter-spacing:-0.025em;line-height:1.05;
+    margin-bottom:16px;
+  }
+  .effective{
+    font-family:"Space Mono",monospace;font-size:12.5px;color:var(--slate);
+    margin-bottom:40px;letter-spacing:.03em;
+  }
+  .intro{font-size:1.12rem;color:var(--slate);max-width:64ch;margin-bottom:56px;}
+  .intro strong{color:var(--ink);font-weight:500;}
+  section{margin-bottom:44px;max-width:68ch;}
+  h2{
+    font-family:"Space Grotesk",sans-serif;font-weight:600;
+    font-size:1.32rem;letter-spacing:-0.015em;margin-bottom:14px;
+    display:flex;gap:14px;align-items:baseline;
+  }
+  h2 .n{
+    font-family:"Space Mono",monospace;font-size:13px;color:var(--brass-deep);
+    font-weight:400;flex:none;
+  }
+  p{margin-bottom:14px;color:#384450;}
+  ul{margin:0 0 14px 0;padding-left:22px;}
+  li{margin-bottom:8px;color:#384450;}
+  a{color:var(--brass-deep);}
+  strong{font-weight:600;color:var(--ink);}
+  .contact-block{
+    border:1px solid var(--rule);
+    padding:28px 30px;margin-top:8px;
+    font-family:"Space Mono",monospace;font-size:13.5px;line-height:2;color:var(--slate);
+  }
+  .contact-block a{text-decoration:none;border-bottom:1px solid var(--rule);color:var(--ink);}
+  .contact-block a:hover{border-color:var(--brass);}
+  :focus-visible{outline:2px solid var(--brass);outline-offset:3px;}
+  @media (max-width:760px){
+    :root{--spine-x:26px;}
+    .wrap{padding-left:calc(var(--spine-x) + 26px);padding-right:24px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="spine" aria-hidden="true"></div>
+
+<div class="wrap">
+  <div class="topbar">
+    <a class="brand" href="index.html">Plumbline<span>.</span>Labs</a>
+    <a class="back" href="index.html">← back</a>
+  </div>
+
+  <div class="doc-label">Legal</div>
+  <h1>Data Processing Addendum</h1>
+  <div class="effective">Effective date: July 1, 2026</div>
+
+  <p class="intro">This Data Processing Addendum ("DPA") forms part of the <a href="terms.html">Terms of Service</a> between <strong>Plumbline Labs</strong> ("Plumbline," "Processor") and the customer ("you," "Controller") and applies where Plumbline processes personal data on your behalf — in particular, customer personal data contained in orders from a connected e-commerce store.</p>
+
+  <section>
+    <h2><span class="n">01</span> Roles</h2>
+    <p>For personal data that Plumbline processes on your behalf, you are the <strong>controller</strong> (or processor for your own merchants) and Plumbline is the <strong>processor</strong> (or sub-processor). Each party will comply with the data protection laws that apply to it.</p>
+  </section>
+
+  <section>
+    <h2><span class="n">02</span> Scope and details of processing</h2>
+    <ul>
+      <li><strong>Subject matter and purpose.</strong> Providing cross-platform advertising measurement and reporting.</li>
+      <li><strong>Duration.</strong> For as long as you use the services, subject to the deletion terms below.</li>
+      <li><strong>Nature of processing.</strong> Read-only access to connected accounts; aggregation and analysis to produce measurement reporting.</li>
+      <li><strong>Types of personal data.</strong> Order-level commercial data. Plumbline does not request or store customer-identifying fields (such as name, email, address, or phone). Limited identifiers may appear incidentally in attribution fields and are used only for measurement.</li>
+      <li><strong>Categories of data subjects.</strong> Your customers and site visitors whose activity is reflected in order and advertising data.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="n">03</span> Processor obligations</h2>
+    <p>Plumbline will: (a) process personal data only on your documented instructions, including as set out in the Terms of Service and this DPA; (b) ensure persons authorized to process personal data are bound by confidentiality; (c) implement appropriate technical and organizational security measures (§04); (d) not sell personal data or use it for advertising to individuals or any purpose other than providing the services; and (e) assist you, taking into account the nature of processing, in meeting your own compliance obligations.</p>
+  </section>
+
+  <section>
+    <h2><span class="n">04</span> Security</h2>
+    <p>Plumbline maintains appropriate security measures, including encryption of data in transit and at rest, storage of access tokens in a key-management-backed vault, tenant isolation and access controls, and regular review of its practices. Plumbline limits access to personal data to personnel who need it to provide the services.</p>
+  </section>
+
+  <section>
+    <h2><span class="n">05</span> Sub-processors</h2>
+    <p>You authorize Plumbline to engage sub-processors (such as cloud infrastructure and hosting providers) to support the services. Plumbline imposes data protection obligations on its sub-processors that are no less protective than those in this DPA and remains responsible for their performance. We will make our list of sub-processors available on request and give notice of material changes.</p>
+  </section>
+
+  <section>
+    <h2><span class="n">06</span> Data subject requests</h2>
+    <p>Taking into account the nature of the processing, Plumbline will assist you in responding to requests from data subjects to exercise their rights. Because Plumbline stores order data in aggregated form and does not retain customer-identifying fields, we honor erasure requests by deleting the associated data — including via platform mechanisms such as Shopify's customer-redaction and shop-redaction webhooks.</p>
+  </section>
+
+  <section>
+    <h2><span class="n">07</span> Personal data breach</h2>
+    <p>Plumbline will notify you without undue delay after becoming aware of a personal data breach affecting personal data processed on your behalf, and will provide information reasonably available to help you meet any notification obligations.</p>
+  </section>
+
+  <section>
+    <h2><span class="n">08</span> Deletion and return</h2>
+    <p>On termination of the services, or upon your request, Plumbline will delete or de-identify the personal data it processes on your behalf, except where retention is required by law. Uninstalling the app from a connected store triggers revocation of access and deletion of that store's data.</p>
+  </section>
+
+  <section>
+    <h2><span class="n">09</span> International transfers</h2>
+    <p>Where personal data is transferred across borders, the parties will rely on an appropriate transfer mechanism recognized under applicable data protection law.</p>
+  </section>
+
+  <section>
+    <h2><span class="n">10</span> Audit and compliance</h2>
+    <p>Plumbline will make available information reasonably necessary to demonstrate compliance with this DPA and will contribute to audits as required by applicable data protection law, subject to reasonable confidentiality and security safeguards.</p>
+  </section>
+
+  <section>
+    <h2><span class="n">11</span> Contact us</h2>
+    <p>For questions about this DPA or our data processing, contact:</p>
+    <div class="contact-block">
+      Plumbline Labs<br/>
+      <a href="mailto:privacy@plumblinelabs.com">privacy@plumblinelabs.com</a><br/>
+      Austin, Texas, USA
+    </div>
+  </section>
+
+</div>
+</body>
+</html>
