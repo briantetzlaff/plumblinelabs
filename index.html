@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Plumbline — one honest number for your ad spend</title>
-<meta name="description" content="Ad platforms each claim credit for the same sale. Plumbline measures every channel against your Shopify orders — one honest blended number, verdicts you can trust, and budget moves only when your data can support them." />
+<title>Plumbline: one honest number for your ad spend</title>
+<meta name="description" content="Ad platforms each claim credit for the same sale. Plumbline measures every channel against your Shopify orders: one honest blended number, verdicts you can trust, and budget moves only when your data can support them." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500&family=Public+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -92,7 +92,7 @@
   .wont h2{font-size:24px;}
   .wont ul{list-style:none;margin-top:18px;display:grid;gap:12px;}
   .wont li{padding-left:26px;position:relative;color:var(--pl-ink-soft);font-size:15px;}
-  .wont li::before{content:"—";position:absolute;left:0;color:var(--pl-accent);}
+  .wont li::before{content:"";position:absolute;left:0;top:0.55em;width:13px;height:2px;background:var(--pl-accent);}
 
   .tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;align-items:start;}
   .tier{background:var(--pl-surface);border:0.5px solid var(--pl-rule);border-radius:10px;padding:24px;}
@@ -134,7 +134,7 @@
   <header class="hero">
     <div class="kicker">Ad measurement for Shopify stores</div>
     <h1>Every platform claims the same sale. Your ledger doesn't lie.</h1>
-    <p class="lede">Meta, Google, and TikTok each grade their own homework — and each takes credit
+    <p class="lede">Meta, Google, and TikTok each grade their own homework, and each takes credit
     for orders the others also count. Plumbline measures every channel against the one
     source they can't inflate: your Shopify orders.</p>
     <div class="readout">
@@ -142,14 +142,14 @@
       <div class="val mono">1.84×</div>
       <div class="lbl">platforms claim <span class="claim mono">2.93×</span></div>
       <div class="gap">claims exceed your ledger by $8,400</div>
-      <div class="foot">Example reading. Your trial shows your real number next to what the platforms claim — usually within the first session.</div>
+      <div class="foot">Example reading. Your trial shows your real number next to what the platforms claim, usually within the first session.</div>
     </div>
   </header>
 
   <section id="how">
     <h2>The double-count, in one picture</h2>
     <p class="sub">Add up what each platform reports and you get more revenue than your store
-    actually made. That's not fraud — it's three referees each awarding themselves the same point.
+    actually made. That's not fraud. It's three referees each awarding themselves the same point.
     Plumbline dedupes it against actual orders.</p>
     <div class="claims">
       <div class="c"><div class="who">Meta says</div><div class="n mono">$8,940</div></div>
@@ -170,7 +170,7 @@
       <div class="layer">
         <div class="step">LAYER 1 · ACCOUNTING</div>
         <h3>The ground-truth ledger</h3>
-        <p>Every order resolved to its source with auditable rules — click IDs, enforced UTMs,
+        <p>Every order resolved to its source with auditable rules: click IDs, enforced UTMs,
         referrers. Blended MER and new-customer CPA computed from orders, not platform claims.
         What we can't attribute goes in an honest bucket, shown, never hidden.</p>
         <span class="chip neutral">Works from day one, at any size</span>
@@ -178,7 +178,7 @@
       <div class="layer">
         <div class="step">LAYER 2 · STATISTICS</div>
         <h3>Verdicts, not vibes</h3>
-        <p>Channel effectiveness estimated with calibrated uncertainty — and a computed verdict
+        <p>Channel effectiveness estimated with calibrated uncertainty, plus a computed verdict
         on whether you have enough signal to act at all. "Can't tell yet, here's what would fix
         it" is an answer no platform will ever give you.</p>
         <span class="chip ok">Actionable</span> <span class="chip warn">Not enough signal</span>
@@ -187,7 +187,7 @@
         <div class="step">LAYER 3 · DECISIONS</div>
         <h3>Budget moves with guardrails</h3>
         <p>When at least two channels clear the signal floor, Plumbline recommends the specific
-        move — "shift $400 from Meta to Google this week" — within caps, floors, and platform
+        move ("shift $400 from Meta to Google this week") within caps, floors, and platform
         minimums you control.</p>
         <span class="chip neutral">Unlocks when your data supports it</span>
       </div>
@@ -199,22 +199,23 @@
       <h2>What Plumbline won't do</h2>
       <ul>
         <li>It won't show you a confident number your data can't support. Below the signal
-        floor, it says so — and tells you exactly what would change that.</li>
+        floor, it says so and tells you exactly what would change that.</li>
         <li>It won't guess. No probabilistic attribution at low order volume, where models
         overfit noise and produce a confident wrong answer.</li>
         <li>It won't see everything. Server-side attribution misses some view-through and
-        dark-social orders; they land in the unattributed bucket, labeled as exactly that.</li>
-        <li>It won't manage your ads. Plumbline decides the split between platforms; Advantage+
-        and PMax keep doing what they're good at inside each one.</li>
-        <li>It won't grow an enterprise tier. Brands spending $50k+/mo already have Measured,
-        Rockerbox, and Compass. This is built for everyone they priced out.</li>
+        dark-social orders. Those land in the unattributed bucket, labeled as exactly that.</li>
+        <li>It won't manage your ads. Plumbline decides the split between platforms, and each
+        platform's own automation keeps optimizing inside its channel.</li>
+        <li>It won't add enterprise complexity. Plumbline is self-serve and priced for the
+        stores that big measurement suites overlook. Larger brands are welcome here too;
+        there's just no sales call, and never will be.</li>
       </ul>
     </div>
   </section>
 
   <section id="pricing">
     <h2>Pricing that respects your data</h2>
-    <p class="sub">Every tier above Baseline is gated by the product's own verdict — you can't
+    <p class="sub">Every tier above Baseline is gated by the product's own verdict: you can't
     pay for math your data can't support. 14-day free trial; monthly, cancel anytime; annual
     gets two months free.</p>
     <div class="tiers">
@@ -248,18 +249,18 @@
           <li>Specific weekly budget moves with caps, floors, and max-move limits</li>
           <li>Geo-holdout calibration as it ships</li>
         </ul>
-        <div class="gate">Unlocks at two or more actionable channels — a recommendation needs a
+        <div class="gate">Unlocks at two or more actionable channels, because a recommendation needs a
         trustworthy comparison.</div>
       </div>
     </div>
-    <p class="pricing-note">Why $39? It's about 1% of a $3–4k monthly ad budget — to know whether
+    <p class="pricing-note">Why $39? It's about 1% of a $3–4k monthly ad budget, paid to know whether
     the other 99% is working. A one-time freelancer audit runs $300–1,500; the honest tools start
     at $129/mo and still aren't ground truth.</p>
   </section>
 
   <section>
     <h2>Where Plumbline sits</h2>
-    <p class="sub">Not a cheaper version of the enterprise suites — a different shape of company:
+    <p class="sub">Not a cheaper version of the enterprise suites. A different shape of company:
     their honesty, at the price and self-serve motion of the simple tools.</p>
     <table class="versus">
       <tr><th>Alternative</th><th>What it gives you</th><th>What it can't</th></tr>
