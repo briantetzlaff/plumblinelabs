@@ -3,385 +3,282 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Plumbline Labs — Cross-platform advertising measurement</title>
-<meta name="description" content="Plumbline Labs measures advertising performance across Google, Meta, and TikTok against a single source of truth, so budget moves toward what is actually working." />
+<title>Plumbline — one honest number for your ad spend</title>
+<meta name="description" content="Ad platforms each claim credit for the same sale. Plumbline measures every channel against your Shopify orders — one honest blended number, verdicts you can trust, and budget moves only when your data can support them." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500&family=Public+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <style>
+  /* Field-notebook theme — kept in sync with dashboard/tokens.css (locked 2026-07-02) */
   :root{
-    --paper:#EAEEF0;
-    --paper-2:#E1E6E9;
-    --ink:#19222A;
-    --ink-panel:#141B22;
-    --slate:#586673;
-    --brass:#B0894F;
-    --brass-deep:#8A6A3A;
-    --rule:#C3CCD2;
-    --spine-x:148px;
+    --pl-bg:#F5F3EF; --pl-surface:#FCFBF9; --pl-sunken:#EAE7DF;
+    --pl-ink:#33312C; --pl-ink-soft:#6B675C; --pl-ink-faint:#84806F;
+    --pl-muted:#A8A492; --pl-rule:#E3E0D8; --pl-rule-strong:#CFCBBE;
+    --pl-accent:#D96C1E; --pl-accent-ink:#7C3A0B; --pl-accent-tint:#F6E3D2;
+    --pl-ok-bg:#E2E8D8; --pl-ok-text:#3E5324;
+    --pl-warn-bg:#F4E5CE; --pl-warn-text:#7C5A1C;
+    --pl-neutral-bg:#EAE7DF; --pl-neutral-text:#6B675C;
+    --spine-x:120px;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   html{scroll-behavior:smooth;}
-  body{
-    background:var(--paper);
-    color:var(--ink);
-    font-family:"Inter",system-ui,sans-serif;
-    line-height:1.6;
-    -webkit-font-smoothing:antialiased;
-    overflow-x:hidden;
-  }
+  body{background:var(--pl-bg);color:var(--pl-ink);
+       font-family:"Public Sans",system-ui,sans-serif;font-size:16px;line-height:1.65;
+       -webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  h1,h2,h3{font-family:"Jost",sans-serif;font-weight:500;line-height:1.25;}
+  .mono{font-family:"IBM Plex Mono",monospace;font-feature-settings:"tnum";}
 
-  /* ---- persistent plumb-line spine ---- */
-  .spine{
-    position:fixed;
-    top:0;bottom:0;
-    left:var(--spine-x);
-    width:1px;
-    background:var(--rule);
-    z-index:0;
-    pointer-events:none;
-  }
-  .spine::before{ /* graduated ruler ticks */
-    content:"";
-    position:absolute;
-    top:0;bottom:0;
-    left:0;
-    width:9px;
-    background:repeating-linear-gradient(
-      to bottom,
-      var(--rule) 0, var(--rule) 1px,
-      transparent 1px, transparent 26px
-    );
-  }
-  .spine::after{ /* major ticks */
-    content:"";
-    position:absolute;
-    top:0;bottom:0;
-    left:0;
-    width:17px;
-    background:repeating-linear-gradient(
-      to bottom,
-      var(--rule) 0, var(--rule) 1.5px,
-      transparent 1.5px, transparent 130px
-    );
-    opacity:.7;
-  }
-
-  .wrap{
-    position:relative;
-    z-index:1;
-    padding-left:calc(var(--spine-x) + 56px);
-    padding-right:48px;
-    max-width:1180px;
-  }
-
-  /* ---- hero ---- */
-  header.hero{
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    padding-top:88px;
-    padding-bottom:72px;
-    position:relative;
-  }
-  .eyebrow{
-    font-family:"Space Mono",monospace;
-    font-size:13px;
-    letter-spacing:.22em;
-    text-transform:uppercase;
-    color:var(--brass-deep);
-    margin-bottom:30px;
-    display:flex;
-    align-items:center;
-    gap:14px;
-  }
-  .eyebrow::before{
-    content:"";
-    width:26px;height:1px;background:var(--brass);
-    display:inline-block;
-  }
-  h1{
-    font-family:"Space Grotesk",sans-serif;
-    font-weight:600;
-    font-size:clamp(2.5rem,6.2vw,4.7rem);
-    line-height:1.02;
-    letter-spacing:-0.025em;
-    max-width:14ch;
-    margin-bottom:30px;
-  }
-  h1 .true{
-    color:var(--brass);
-    font-style:normal;
-    position:relative;
-  }
-  .lede{
-    font-size:clamp(1.05rem,1.7vw,1.32rem);
-    color:var(--slate);
-    max-width:54ch;
-    font-weight:400;
-  }
-  .lede strong{color:var(--ink);font-weight:500;}
-
-  /* plumb bob hanging on the spine in the hero */
-  .bob{
-    position:absolute;
-    left:var(--spine-x);
-    top:max(30vh,210px);
-    transform:translateX(-50%);
-    width:34px;
-    transform-origin:top center;
-    z-index:2;
-    animation:settle 4.2s cubic-bezier(.33,.0,.2,1) 1 both;
-  }
-  .bob svg{display:block;width:100%;height:auto;
-    filter:drop-shadow(0 6px 10px rgba(20,27,34,.18));}
-  .bob-read{
-    position:absolute;
-    left:50%;
-    top:calc(100% + 8px);
-    transform:translateX(-50%);
-    font-family:"Space Mono",monospace;
-    font-size:11px;
-    letter-spacing:.12em;
-    color:var(--brass-deep);
-    white-space:nowrap;
-    opacity:0;
-    animation:fadein 1s ease 3.6s both;
-  }
-  @keyframes settle{
-    0%{transform:translateX(-50%) rotate(15deg);}
-    18%{transform:translateX(-50%) rotate(-11deg);}
-    36%{transform:translateX(-50%) rotate(7deg);}
-    54%{transform:translateX(-50%) rotate(-4deg);}
-    72%{transform:translateX(-50%) rotate(2deg);}
-    88%{transform:translateX(-50%) rotate(-1deg);}
-    100%{transform:translateX(-50%) rotate(0deg);}
-  }
-  @keyframes fadein{to{opacity:1;}}
-
-  /* ---- section scaffolding ---- */
-  section{padding:84px 0;}
-  .section-label{
-    font-family:"Space Mono",monospace;
-    font-size:12px;
-    letter-spacing:.2em;
-    text-transform:uppercase;
-    color:var(--slate);
-    margin-bottom:34px;
-    display:flex;align-items:center;gap:12px;
-  }
-  .section-label .idx{color:var(--brass-deep);}
-
-  h2{
-    font-family:"Space Grotesk",sans-serif;
-    font-weight:600;
-    font-size:clamp(1.7rem,3.4vw,2.5rem);
-    letter-spacing:-0.02em;
-    line-height:1.1;
-    max-width:20ch;
-    margin-bottom:18px;
-  }
-  .section-intro{
-    color:var(--slate);
-    font-size:1.1rem;
-    max-width:60ch;
-    margin-bottom:52px;
-  }
-
-  /* capabilities */
-  .caps{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:1px;
-    background:var(--rule);
-    border:1px solid var(--rule);
-  }
-  .cap{
-    background:var(--paper);
-    padding:34px 30px 40px;
-  }
-  .cap .num{
-    font-family:"Space Mono",monospace;
-    font-size:12px;
-    color:var(--brass-deep);
-    letter-spacing:.1em;
-    margin-bottom:22px;
-  }
-  .cap h3{
-    font-family:"Space Grotesk",sans-serif;
-    font-weight:600;
-    font-size:1.18rem;
-    letter-spacing:-0.01em;
-    margin-bottom:12px;
-  }
-  .cap p{color:var(--slate);font-size:.98rem;}
-
-  /* approach panel */
-  .approach{
-    background:var(--ink-panel);
-    color:var(--paper);
-    margin-left:calc(-1 * (var(--spine-x) + 56px));
-    margin-right:-48px;
-    padding-left:calc(var(--spine-x) + 56px);
-    padding-right:48px;
-  }
-  .approach .section-label{color:#8995A0;}
-  .approach h2{color:var(--paper);}
-  .approach .body{
-    max-width:62ch;
-    font-size:1.18rem;
-    color:#C4CDD4;
-  }
-  .approach .body p{margin-bottom:20px;}
-  .approach .body strong{color:var(--brass);font-weight:500;}
-  .approach .q{
-    font-family:"Space Grotesk",sans-serif;
-    font-size:clamp(1.3rem,2.4vw,1.7rem);
-    color:var(--paper);
-    font-weight:500;
-    letter-spacing:-0.015em;
-    line-height:1.25;
-    margin-top:36px;
-    padding-left:22px;
-    border-left:2px solid var(--brass);
-    max-width:24ch;
-  }
-
-  /* footer */
-  footer{
-    padding:64px 0 80px;
-    border-top:1px solid var(--rule);
-    display:flex;
-    flex-wrap:wrap;
-    gap:32px;
-    justify-content:space-between;
-    align-items:flex-end;
-  }
-  .f-brand{
-    font-family:"Space Grotesk",sans-serif;
-    font-weight:700;
-    font-size:1.15rem;
-    letter-spacing:-0.01em;
-  }
-  .f-brand span{color:var(--brass);}
-  .f-meta{
-    font-family:"Space Mono",monospace;
-    font-size:12.5px;
-    color:var(--slate);
-    line-height:1.9;
-  }
-  .f-meta a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule);}
-  .f-meta a:hover{border-color:var(--brass);color:var(--brass-deep);}
-  .f-links{display:flex;flex-direction:column;gap:6px;text-align:right;}
-
-  :focus-visible{outline:2px solid var(--brass);outline-offset:3px;}
-
+  /* the plumb line: a true vertical, weighted by its bob */
+  .spine{position:fixed;top:0;bottom:0;left:var(--spine-x);width:2px;
+         background:var(--pl-accent);z-index:0;pointer-events:none;}
+  .spine::before{content:"";position:absolute;top:0;bottom:0;left:10px;width:8px;
+    background:repeating-linear-gradient(to bottom,var(--pl-rule-strong) 0,var(--pl-rule-strong) 1px,transparent 1px,transparent 26px);}
+  .spine .bob{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+    width:14px;height:14px;background:var(--pl-accent);
+    clip-path:polygon(50% 100%,0 30%,20% 0,80% 0,100% 30%);}
+  .wrap{position:relative;z-index:1;padding-left:calc(var(--spine-x) + 52px);
+        padding-right:44px;max-width:1120px;}
   @media (max-width:760px){
-    :root{--spine-x:26px;}
-    .wrap{padding-left:calc(var(--spine-x) + 26px);padding-right:24px;}
-    .spine::after{width:11px;}
-    .caps{grid-template-columns:1fr;}
-    .approach{
-      margin-left:calc(-1 * (var(--spine-x) + 26px));
-      margin-right:-24px;
-      padding-left:calc(var(--spine-x) + 26px);
-      padding-right:24px;
-    }
-    .bob{width:28px;top:max(26vh,180px);}
-    footer{flex-direction:column;align-items:flex-start;}
-    .f-links{text-align:left;}
+    :root{--spine-x:22px;}
+    .wrap{padding-left:calc(var(--spine-x) + 26px);padding-right:20px;}
   }
-  @media (prefers-reduced-motion:reduce){
-    html{scroll-behavior:auto;}
-    .bob{animation:none;}
-    .bob-read{animation:none;opacity:1;}
-  }
+
+  nav{display:flex;align-items:center;gap:26px;padding:26px 0;}
+  .wordmark{font-family:"Jost",sans-serif;font-weight:500;letter-spacing:0.16em;font-size:14px;}
+  nav a{color:var(--pl-ink-soft);text-decoration:none;font-size:14px;}
+  nav a:hover{color:var(--pl-ink);}
+  nav .cta{margin-left:auto;background:var(--pl-ink);color:var(--pl-surface);
+           padding:8px 18px;border-radius:6px;font-weight:500;}
+  nav .cta:hover{background:#221f1a;color:var(--pl-surface);}
+
+  header.hero{padding:72px 0 64px;border-bottom:0.5px solid var(--pl-rule);}
+  .kicker{font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:var(--pl-accent-ink);margin-bottom:14px;}
+  .hero h1{font-size:clamp(30px,4.6vw,46px);max-width:15ch;}
+  .hero p.lede{max-width:52ch;color:var(--pl-ink-soft);margin:18px 0 34px;font-size:18px;}
+
+  .readout{background:var(--pl-surface);border:0.5px solid var(--pl-rule);
+           border-radius:10px;padding:26px 30px;max-width:560px;}
+  .readout .lbl{font-size:12px;color:var(--pl-ink-faint);}
+  .readout .val{font-size:46px;line-height:1.15;}
+  .readout .claim{color:var(--pl-muted);text-decoration:line-through;}
+  .readout .gap{display:inline-block;margin-top:10px;font-size:13px;padding:3px 10px;
+                border-radius:6px;background:var(--pl-warn-bg);color:var(--pl-warn-text);}
+  .readout .foot{margin-top:14px;padding-top:12px;border-top:0.5px solid var(--pl-rule);
+                 font-size:12px;color:var(--pl-muted);}
+
+  section{padding:64px 0;border-bottom:0.5px solid var(--pl-rule);}
+  section h2{font-size:28px;margin-bottom:10px;}
+  .sub{color:var(--pl-ink-soft);max-width:58ch;margin-bottom:34px;}
+
+  .claims{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;max-width:760px;}
+  .claims .c{background:var(--pl-surface);border:0.5px solid var(--pl-rule);border-radius:10px;padding:16px 18px;}
+  .claims .c .who{font-size:13px;color:var(--pl-ink-faint);}
+  .claims .c .n{font-size:26px;}
+  .claims .sum{border:0.5px dashed var(--pl-rule-strong);background:transparent;}
+  .claims .truth{border-left:2px solid var(--pl-accent);border-radius:0 10px 10px 0;}
+  .note{font-size:13px;color:var(--pl-ink-faint);margin-top:16px;max-width:60ch;}
+
+  .layers{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;}
+  .layer{background:var(--pl-surface);border:0.5px solid var(--pl-rule);border-radius:10px;padding:22px;}
+  .layer .step{font-size:12px;color:var(--pl-accent-ink);letter-spacing:0.08em;}
+  .layer h3{font-size:19px;margin:6px 0 8px;}
+  .layer p{font-size:14px;color:var(--pl-ink-soft);}
+  .chip{display:inline-block;font-size:12px;padding:2px 9px;border-radius:6px;margin-top:12px;}
+  .chip.ok{background:var(--pl-ok-bg);color:var(--pl-ok-text);}
+  .chip.warn{background:var(--pl-warn-bg);color:var(--pl-warn-text);}
+  .chip.neutral{background:var(--pl-neutral-bg);color:var(--pl-neutral-text);}
+
+  .wont{background:var(--pl-sunken);border-radius:10px;padding:30px 32px;max-width:820px;}
+  .wont h2{font-size:24px;}
+  .wont ul{list-style:none;margin-top:18px;display:grid;gap:12px;}
+  .wont li{padding-left:26px;position:relative;color:var(--pl-ink-soft);font-size:15px;}
+  .wont li::before{content:"—";position:absolute;left:0;color:var(--pl-accent);}
+
+  .tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;align-items:start;}
+  .tier{background:var(--pl-surface);border:0.5px solid var(--pl-rule);border-radius:10px;padding:24px;}
+  .tier.feature{border:2px solid var(--pl-accent);}
+  .tier .name{font-family:"Jost",sans-serif;font-size:18px;font-weight:500;}
+  .tier .price{font-size:32px;margin:8px 0 2px;}
+  .tier .per{font-size:13px;color:var(--pl-ink-faint);}
+  .tier ul{list-style:none;margin:16px 0;display:grid;gap:8px;font-size:14px;color:var(--pl-ink-soft);}
+  .tier li{padding-left:20px;position:relative;}
+  .tier li::before{content:"·";position:absolute;left:6px;color:var(--pl-accent);}
+  .tier .gate{font-size:12px;background:var(--pl-neutral-bg);color:var(--pl-neutral-text);
+              border-radius:6px;padding:8px 10px;margin-top:4px;}
+  .tier a{display:block;text-align:center;margin-top:16px;background:var(--pl-ink);color:var(--pl-surface);
+          padding:9px 0;border-radius:6px;text-decoration:none;font-weight:500;font-size:14px;}
+  .pricing-note{font-size:13px;color:var(--pl-ink-faint);margin-top:18px;max-width:64ch;}
+
+  .versus{width:100%;border-collapse:collapse;font-size:14px;max-width:860px;}
+  .versus th{font-family:"Jost",sans-serif;font-weight:500;text-align:left;padding:10px 12px;
+             border-bottom:0.5px solid var(--pl-rule-strong);}
+  .versus td{padding:10px 12px;border-bottom:0.5px solid var(--pl-rule);color:var(--pl-ink-soft);vertical-align:top;}
+  .versus td:first-child{color:var(--pl-ink);font-weight:500;}
+
+  footer{padding:44px 0 60px;font-size:13px;color:var(--pl-ink-faint);}
+  footer a{color:var(--pl-ink-soft);}
 </style>
 </head>
 <body>
-
-<div class="spine" aria-hidden="true"></div>
+<div class="spine" aria-hidden="true"><span class="bob"></span></div>
 
 <div class="wrap">
+  <nav>
+    <span class="wordmark">PLUMBLINE</span>
+    <a href="#how">How it works</a>
+    <a href="#wont">What we won't do</a>
+    <a href="#pricing">Pricing</a>
+    <a class="cta" href="/login">Start free trial</a>
+  </nav>
 
   <header class="hero">
-    <div class="bob" aria-hidden="true">
-      <svg viewBox="0 0 34 78" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="brassg" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0" stop-color="#C9A463"/>
-            <stop offset="0.5" stop-color="#B0894F"/>
-            <stop offset="1" stop-color="#7E5F34"/>
-          </linearGradient>
-        </defs>
-        <circle cx="17" cy="5" r="3.4" fill="none" stroke="#8A6A3A" stroke-width="1.6"/>
-        <path d="M17 9 L17 16" stroke="#8A6A3A" stroke-width="1.6"/>
-        <path d="M17 16
-                 C 11 18, 6 24, 6 34
-                 C 6 41, 10 47, 17 75
-                 C 24 47, 28 41, 28 34
-                 C 28 24, 23 18, 17 16 Z"
-              fill="url(#brassg)" stroke="#6F5430" stroke-width="0.8"/>
-        <path d="M8.5 30 Q17 34 25.5 30" stroke="#7E5F34" stroke-width="0.7" fill="none" opacity="0.7"/>
-        <path d="M11 21 Q17 19 17 19" stroke="#E4CB97" stroke-width="1.4" fill="none" opacity="0.65" stroke-linecap="round"/>
-      </svg>
-      <div class="bob-read">true&nbsp;vertical</div>
+    <div class="kicker">Ad measurement for Shopify stores</div>
+    <h1>Every platform claims the same sale. Your ledger doesn't lie.</h1>
+    <p class="lede">Meta, Google, and TikTok each grade their own homework — and each takes credit
+    for orders the others also count. Plumbline measures every channel against the one
+    source they can't inflate: your Shopify orders.</p>
+    <div class="readout">
+      <div class="lbl">Blended MER · last 28 days</div>
+      <div class="val mono">1.84×</div>
+      <div class="lbl">platforms claim <span class="claim mono">2.93×</span></div>
+      <div class="gap">claims exceed your ledger by $8,400</div>
+      <div class="foot">Example reading. Your trial shows your real number next to what the platforms claim — usually within the first session.</div>
     </div>
-
-    <p class="eyebrow">Plumbline Labs</p>
-    <h1>One <span class="true">true line</span> across every ad platform.</h1>
-    <p class="lede">Plumbline measures advertising performance across Google, Meta, and TikTok against a <strong>single source of truth</strong> — so budget moves toward what is actually working, not toward whichever platform claims the most credit.</p>
   </header>
 
-  <section id="product">
-    <div class="section-label"><span class="idx">01</span> What Plumbline does</div>
-    <h2>Three platforms report three different stories. We measure one.</h2>
-    <p class="section-intro">Every ad platform optimizes inside its own walls and grades its own homework. Plumbline sits across all of them and measures performance the same way, every time, against outcomes you own.</p>
+  <section id="how">
+    <h2>The double-count, in one picture</h2>
+    <p class="sub">Add up what each platform reports and you get more revenue than your store
+    actually made. That's not fraud — it's three referees each awarding themselves the same point.
+    Plumbline dedupes it against actual orders.</p>
+    <div class="claims">
+      <div class="c"><div class="who">Meta says</div><div class="n mono">$8,940</div></div>
+      <div class="c"><div class="who">Google says</div><div class="n mono">$9,050</div></div>
+      <div class="c"><div class="who">TikTok says</div><div class="n mono">$2,610</div></div>
+      <div class="c sum"><div class="who">their total</div><div class="n mono">$20,600</div></div>
+      <div class="c truth"><div class="who">your Shopify orders</div><div class="n mono">$14,210</div></div>
+    </div>
+    <p class="note">Illustrative figures. The pattern is near-universal: platform-reported
+    revenue typically exceeds actual store revenue by 30–90% once every channel is counted.</p>
+  </section>
 
-    <div class="caps">
-      <div class="cap">
-        <div class="num">/ 01</div>
-        <h3>Measure once, across everything</h3>
-        <p>Spend and outcomes from every platform, normalized to one honest metric instead of three conflicting dashboards.</p>
+  <section>
+    <h2>Three layers, in order of trust</h2>
+    <p class="sub">Plumbline is built like the instrument it's named after: the accounting comes
+    first, statistics only when your data can carry them, and recommendations last of all.</p>
+    <div class="layers">
+      <div class="layer">
+        <div class="step">LAYER 1 · ACCOUNTING</div>
+        <h3>The ground-truth ledger</h3>
+        <p>Every order resolved to its source with auditable rules — click IDs, enforced UTMs,
+        referrers. Blended MER and new-customer CPA computed from orders, not platform claims.
+        What we can't attribute goes in an honest bucket, shown, never hidden.</p>
+        <span class="chip neutral">Works from day one, at any size</span>
       </div>
-      <div class="cap">
-        <div class="num">/ 02</div>
-        <h3>Separate signal from credit</h3>
-        <p>Platforms over-claim the conversions they merely influenced. Plumbline measures incremental lift against your own ground truth.</p>
+      <div class="layer">
+        <div class="step">LAYER 2 · STATISTICS</div>
+        <h3>Verdicts, not vibes</h3>
+        <p>Channel effectiveness estimated with calibrated uncertainty — and a computed verdict
+        on whether you have enough signal to act at all. "Can't tell yet, here's what would fix
+        it" is an answer no platform will ever give you.</p>
+        <span class="chip ok">Actionable</span> <span class="chip warn">Not enough signal</span>
       </div>
-      <div class="cap">
-        <div class="num">/ 03</div>
-        <h3>Move budget toward the truth</h3>
-        <p>Allocation follows real cross-platform performance, on a cadence no weekly manual review can match.</p>
+      <div class="layer">
+        <div class="step">LAYER 3 · DECISIONS</div>
+        <h3>Budget moves with guardrails</h3>
+        <p>When at least two channels clear the signal floor, Plumbline recommends the specific
+        move — "shift $400 from Meta to Google this week" — within caps, floors, and platform
+        minimums you control.</p>
+        <span class="chip neutral">Unlocks when your data supports it</span>
       </div>
     </div>
   </section>
 
-  <section class="approach" id="approach">
-    <div class="section-label"><span class="idx">02</span> Approach</div>
-    <h2>Built independent, on purpose.</h2>
-    <div class="body">
-      <p>The ad platforms each optimize within their own walls and report their own numbers. None of them is neutral, and none will tell you when a competitor's platform is delivering cheaper results.</p>
-      <p>Plumbline is the layer they structurally can't be: it sits <strong>across</strong> Google, Meta, and TikTok, measurement-first, owned by no one's auction. The discipline underneath it is honest cross-platform measurement — the part the walled gardens have no incentive to build for you.</p>
-      <div class="q">Where does the next dollar do the most good?</div>
+  <section id="wont">
+    <div class="wont">
+      <h2>What Plumbline won't do</h2>
+      <ul>
+        <li>It won't show you a confident number your data can't support. Below the signal
+        floor, it says so — and tells you exactly what would change that.</li>
+        <li>It won't guess. No probabilistic attribution at low order volume, where models
+        overfit noise and produce a confident wrong answer.</li>
+        <li>It won't see everything. Server-side attribution misses some view-through and
+        dark-social orders; they land in the unattributed bucket, labeled as exactly that.</li>
+        <li>It won't manage your ads. Plumbline decides the split between platforms; Advantage+
+        and PMax keep doing what they're good at inside each one.</li>
+        <li>It won't grow an enterprise tier. Brands spending $50k+/mo already have Measured,
+        Rockerbox, and Compass. This is built for everyone they priced out.</li>
+      </ul>
     </div>
+  </section>
+
+  <section id="pricing">
+    <h2>Pricing that respects your data</h2>
+    <p class="sub">Every tier above Baseline is gated by the product's own verdict — you can't
+    pay for math your data can't support. 14-day free trial; monthly, cancel anytime; annual
+    gets two months free.</p>
+    <div class="tiers">
+      <div class="tier feature">
+        <div class="name">Baseline</div>
+        <div class="price mono">$39</div><div class="per">per month</div>
+        <ul>
+          <li>The ground-truth ledger: blended MER, new-customer CPA, claimed-vs-actual by channel</li>
+          <li>Automated account audit with one-line fixes (UTMs, tracking, campaign structure)</li>
+          <li>Rules-based guidance while your history builds</li>
+          <li>Readiness meter: exactly what stands between you and Measure</li>
+        </ul>
+        <a href="/login">Start free trial</a>
+      </div>
+      <div class="tier">
+        <div class="name">Measure</div>
+        <div class="price mono">$129</div><div class="per">per month</div>
+        <ul>
+          <li>Everything in Baseline</li>
+          <li>Per-channel effectiveness with honest 95% intervals</li>
+          <li>Plain-English verdicts and prescriptions per channel</li>
+        </ul>
+        <div class="gate">Unlocks when at least one channel clears the signal floor. High-spend
+        stores with history often clear it during the trial.</div>
+      </div>
+      <div class="tier">
+        <div class="name">Allocate</div>
+        <div class="price mono">$299</div><div class="per">per month</div>
+        <ul>
+          <li>Everything in Measure</li>
+          <li>Specific weekly budget moves with caps, floors, and max-move limits</li>
+          <li>Geo-holdout calibration as it ships</li>
+        </ul>
+        <div class="gate">Unlocks at two or more actionable channels — a recommendation needs a
+        trustworthy comparison.</div>
+      </div>
+    </div>
+    <p class="pricing-note">Why $39? It's about 1% of a $3–4k monthly ad budget — to know whether
+    the other 99% is working. A one-time freelancer audit runs $300–1,500; the honest tools start
+    at $129/mo and still aren't ground truth.</p>
+  </section>
+
+  <section>
+    <h2>Where Plumbline sits</h2>
+    <p class="sub">Not a cheaper version of the enterprise suites — a different shape of company:
+    their honesty, at the price and self-serve motion of the simple tools.</p>
+    <table class="versus">
+      <tr><th>Alternative</th><th>What it gives you</th><th>What it can't</th></tr>
+      <tr><td>Platform dashboards</td><td>Free, detailed, real-time</td>
+          <td>Each grades its own homework; collectively they over-claim your revenue</td></tr>
+      <tr><td>Cheap automation ($99/mo)</td><td>Rule-based budget shuffling inside one channel</td>
+          <td>No measurement, no cross-platform split, trusts platform numbers as-is</td></tr>
+      <tr><td>Enterprise suites ($1,000+/mo)</td><td>Real incrementality at high spend</td>
+          <td>Priced and built for $30k+/mo spenders; tells everyone else to use a spreadsheet</td></tr>
+      <tr><td>Plumbline</td><td>Ground-truth ledger + honest verdicts from $39</td>
+          <td>Won't pretend: below the signal floor it prescribes fixes instead of faking certainty</td></tr>
+    </table>
   </section>
 
   <footer>
-    <div>
-      <div class="f-brand">Plumbline<span>.</span>Labs</div>
-      <div class="f-meta" style="margin-top:10px;">Cross-platform advertising measurement<br/>Austin, Texas</div>
-    </div>
-    <div class="f-links f-meta">
-      <a href="mailto:hello@plumblinelabs.com">hello@plumblinelabs.com</a>
-      <a href="privacy.html">Privacy Policy</a>
-      <a href="terms.html">Terms</a>
-      <a href="dpa.html">DPA</a>
-      <span style="color:var(--rule);">© 2026 Plumbline Labs</span>
-    </div>
+    <p>Plumbline Labs · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a> ·
+    <a href="/dpa.html">DPA</a></p>
+    <p style="margin-top:6px">True vertical, for ad budgets.</p>
   </footer>
-
 </div>
 </body>
 </html>
