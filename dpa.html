@@ -7,6 +7,7 @@
 <meta name="description" content="How Plumbline Labs processes personal data on behalf of merchants, including customer data from connected e-commerce stores." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 31 4 12l4-10h16l4 10z' fill='%23D96C1E'/%3E%3C/svg%3E" />
 <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500&family=Public+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <style>
   :root{
@@ -19,6 +20,7 @@
     --spine-x:148px;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
+  html{overflow-x:hidden;}
   body{
     background:var(--paper);
     color:var(--ink);
@@ -100,6 +102,7 @@
   @media (max-width:760px){
     :root{--spine-x:26px;}
     .wrap{padding-left:calc(var(--spine-x) + 26px);padding-right:24px;}
+    .spine::before{display:none;}
   }
 </style>
 </head>
