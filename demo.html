@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Plumbline demo: the ledger next to what platforms claim</title>
+<meta name="description" content="A worked example of Plumbline's Ledger view: blended MER, what each ad platform claims, and every channel checked against Shopify orders. Generated example data, not a live store." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 31 4 12l4-10h16l4 10z' fill='%23D96C1E'/%3E%3C/svg%3E" />
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500&family=Public+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  /* Field-notebook theme — kept in sync with index.html / partners.html (locked 2026-07-02) */
+  :root{
+    --pl-bg:#F5F3EF; --pl-surface:#FCFBF9; --pl-sunken:#EAE7DF;
+    --pl-ink:#33312C; --pl-ink-soft:#6B675C; --pl-ink-faint:#84806F;
+    --pl-muted:#A8A492; --pl-rule:#E3E0D8; --pl-rule-strong:#CFCBBE;
+    --pl-accent:#D96C1E; --pl-accent-ink:#7C3A0B; --pl-accent-tint:#F6E3D2;
+    --pl-ok-bg:#E2E8D8; --pl-ok-text:#3E5324;
+    --pl-warn-bg:#F4E5CE; --pl-warn-text:#7C5A1C;
+    --pl-neutral-bg:#EAE7DF; --pl-neutral-text:#6B675C;
+    --pl-accent-deep:#B55814;
+    --pl-shadow:0 1px 2px rgba(51,49,44,.05),0 8px 24px rgba(51,49,44,.06);
+    --spine-x:120px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;overflow-x:hidden;}
+  body{background:var(--pl-bg);color:var(--pl-ink);
+       font-family:"Public Sans",system-ui,sans-serif;font-size:16px;line-height:1.65;
+       -webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  h1,h2,h3{font-family:"Jost",sans-serif;font-weight:500;line-height:1.25;}
+  .mono{font-family:"IBM Plex Mono",monospace;font-feature-settings:"tnum";}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--pl-accent);outline-offset:2px;border-radius:2px;}
+
+  /* the plumb line: a true vertical, weighted by its bob */
+  .spine{position:fixed;top:0;bottom:0;left:var(--spine-x);width:2px;
+         background:var(--pl-accent);z-index:0;pointer-events:none;
+         transform-origin:top;animation:spine-draw .7s cubic-bezier(.2,.7,.3,1) both;}
+  .spine::before{content:"";position:absolute;top:0;bottom:0;left:10px;width:8px;
+    background:repeating-linear-gradient(to bottom,var(--pl-rule-strong) 0,var(--pl-rule-strong) 1px,transparent 1px,transparent 26px);}
+  .spine .bob{position:absolute;bottom:36px;left:50%;transform-origin:50% 100%;
+    width:14px;height:14px;background:var(--pl-accent);
+    clip-path:polygon(50% 100%,0 30%,20% 0,80% 0,100% 30%);
+    animation:bob-settle 1.6s cubic-bezier(.2,.7,.3,1) .7s both;}
+  @keyframes spine-draw{from{transform:scaleY(0);}to{transform:scaleY(1);}}
+  @keyframes bob-settle{
+    0%{opacity:0;transform:translateX(-50%) rotate(2deg);}
+    18%{opacity:1;transform:translateX(-50%) rotate(2deg);}
+    55%{transform:translateX(-50%) rotate(-1deg);}
+    100%{opacity:1;transform:translateX(-50%) rotate(0deg);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .spine{animation:none;transform:none;}
+    .spine .bob{animation:none;opacity:1;transform:translateX(-50%) rotate(0deg);}
+  }
+  .wrap{position:relative;z-index:1;padding-left:calc(var(--spine-x) + 52px);
+        padding-right:44px;max-width:1120px;}
+  .station{position:absolute;left:-34px;top:4px;font-family:"IBM Plex Mono",monospace;
+           font-size:12px;color:var(--pl-accent-ink);letter-spacing:0.02em;}
+  @media (max-width:760px){
+    :root{--spine-x:14px;}
+    .wrap{padding-left:calc(var(--spine-x) + 22px);padding-right:18px;}
+    .spine::before{display:none;}
+    .station{display:none;}
+    nav .cta{margin-left:0;}
+    .channels-table{display:block;overflow-x:auto;}
+    .channels-table table{min-width:620px;}
+    .hero{padding-top:40px;}
+    .ledger-card{padding:22px 20px;}
+    .ledger-card .reading{font-size:38px;}
+    .spark-block{margin-left:0 !important;width:100%;}
+    .spark-block svg{max-width:100%;}
+  }
+
+  nav{display:flex;align-items:center;gap:14px 26px;padding:26px 0;flex-wrap:wrap;}
+  .wordmark{font-family:"Jost",sans-serif;font-weight:500;letter-spacing:0.16em;font-size:14px;}
+  nav a{color:var(--pl-ink-soft);text-decoration:none;font-size:14px;padding-bottom:2px;
+        background-image:linear-gradient(var(--pl-ink),var(--pl-ink));background-repeat:no-repeat;
+        background-position:0 100%;background-size:0% 1px;transition:background-size .2s ease,color .15s;}
+  nav a:hover{color:var(--pl-ink);background-size:100% 1px;}
+  nav .cta{margin-left:auto;background:var(--pl-ink);color:var(--pl-surface);
+           padding:8px 18px;border-radius:6px;font-weight:500;background-image:none;}
+  nav .cta:hover{background:#221f1a;color:var(--pl-surface);background-size:0 1px;}
+
+  /* banner: unmissable but not alarming — warn family, same chip language the
+     Ledger itself uses for "can't tell yet" states */
+  .demo-banner{display:flex;align-items:center;gap:9px;background:var(--pl-warn-bg);
+               color:var(--pl-warn-text);font-size:13px;padding:10px 16px;
+               border-radius:8px;margin:0 0 22px;box-shadow:var(--pl-shadow);}
+  .demo-banner .dot{width:6px;height:6px;border-radius:50%;background:var(--pl-warn-text);
+                    flex:none;}
+  .demo-banner strong{font-weight:500;}
+
+  header.hero{position:relative;padding:32px 0 64px;border-bottom:0.5px solid var(--pl-rule);}
+  .kicker{font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:var(--pl-accent-ink);margin-bottom:14px;}
+  .hero h1{font-size:clamp(30px,4.6vw,48px);letter-spacing:-0.01em;max-width:18ch;}
+  .hero p.lede{max-width:60ch;color:var(--pl-ink-soft);margin:18px 0 30px;font-size:18px;}
+
+  /* Ledger card — the L0 reading, translated from dashboard/app/globals.css's
+     .hero/.reading/.claimed/.gapchip onto this page's own token names (same
+     values, dashboard/tokens.css locked 2026-07-02, v2 refresh 2026-07-10). */
+  .ledger-card{background:var(--pl-surface);border:0.5px solid var(--pl-rule);
+               box-shadow:var(--pl-shadow);border-radius:10px;padding:28px 32px;
+               display:flex;flex-wrap:wrap;gap:30px;align-items:flex-end;max-width:920px;}
+  .ledger-card .plumb{width:2px;align-self:stretch;background:var(--pl-accent);}
+  .ledger-card .lbl{font-size:12px;color:var(--pl-ink-faint);}
+  .ledger-card .reading{font-size:46px;line-height:1.15;margin:2px 0 6px;}
+  .ledger-card .claimed{font-size:24px;color:var(--pl-muted);text-decoration:line-through;
+                        margin:2px 0 8px;display:inline-block;}
+  .ledger-card .gapchip{display:inline-block;font-size:12px;padding:3px 10px;
+                        border-radius:6px;background:var(--pl-warn-bg);color:var(--pl-warn-text);}
+  .spark-block{margin-left:auto;}
+  .spark-block svg{display:block;}
+
+  .note{font-size:13px;color:var(--pl-ink-faint);margin-top:18px;max-width:62ch;}
+  .note a{color:var(--pl-ink-soft);padding-bottom:1px;
+        background-image:linear-gradient(var(--pl-ink-soft),var(--pl-ink-soft));background-repeat:no-repeat;
+        background-position:0 100%;background-size:0% 1px;transition:background-size .2s ease;}
+  .note a:hover{background-size:100% 1px;}
+
+  section{position:relative;padding:56px 0;border-bottom:0.5px solid var(--pl-rule);}
+  section h2{font-size:clamp(22px,2.8vw,30px);margin-bottom:10px;}
+  .sub{color:var(--pl-ink-soft);max-width:62ch;margin-bottom:28px;font-size:15px;}
+
+  /* channel table */
+  .channels-table table{width:100%;border-collapse:collapse;font-size:14px;max-width:940px;}
+  .channels-table th{font-family:"Jost",sans-serif;font-weight:500;text-align:left;
+                     padding:8px 12px;font-size:12px;color:var(--pl-ink-faint);
+                     border-bottom:0.5px solid var(--pl-rule-strong);}
+  .channels-table th.num,.channels-table td.num{text-align:right;}
+  .channels-table td{padding:11px 12px;border-bottom:0.5px solid var(--pl-rule);
+                     color:var(--pl-ink-soft);vertical-align:middle;}
+  .channels-table td.name{color:var(--pl-ink);font-weight:500;}
+  .channels-table tr.organic td{color:var(--pl-ink-faint);}
+  .channels-table tr.unattr td{background:var(--pl-sunken);}
+  .channels-table td.claimval{color:var(--pl-muted);text-decoration:line-through;}
+  .channels-table .pct{font-size:11px;color:var(--pl-ink-faint);margin-left:2px;}
+
+  .chip{display:inline-block;font-size:12px;padding:2px 9px;border-radius:6px;}
+  .chip.ok{background:var(--pl-ok-bg);color:var(--pl-ok-text);}
+  .chip.warn{background:var(--pl-warn-bg);color:var(--pl-warn-text);}
+  .chip.neutral{background:var(--pl-neutral-bg);color:var(--pl-neutral-text);}
+
+  .cta-block{background:var(--pl-surface);border:0.5px solid var(--pl-rule);border-radius:10px;
+             padding:30px 32px;max-width:640px;box-shadow:var(--pl-shadow);}
+  .cta-block h2{font-size:24px;margin-bottom:8px;}
+  .cta-block p{color:var(--pl-ink-soft);font-size:15px;margin-bottom:18px;}
+  .cta-block a.btn{display:inline-block;background:var(--pl-ink);color:var(--pl-surface);
+        padding:10px 22px;border-radius:6px;text-decoration:none;font-weight:500;font-size:15px;transition:background .15s ease;}
+  .cta-block a.btn:hover{background:#221f1a;}
+
+  footer{padding:44px 0 60px;font-size:13px;color:var(--pl-ink-faint);}
+  footer a{color:var(--pl-ink-soft);padding-bottom:1px;
+        background-image:linear-gradient(var(--pl-ink-soft),var(--pl-ink-soft));background-repeat:no-repeat;
+        background-position:0 100%;background-size:0% 1px;transition:background-size .2s ease;}
+  footer a:hover{background-size:100% 1px;}
+  .foot-bob{display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:middle;
+            background:var(--pl-accent);clip-path:polygon(50% 100%,0 30%,20% 0,80% 0,100% 30%);}
+</style>
+</head>
+<body>
+<div class="spine" aria-hidden="true"><span class="bob"></span></div>
+
+<div class="wrap">
+  <nav>
+    <span class="wordmark">PLUMBLINE</span>
+    <a href="/index.html">Home</a>
+    <a href="/partners.html">Design partners</a>
+    <a class="cta" href="/partners.html">Get early access</a>
+  </nav>
+
+  <div class="demo-banner"><span class="dot" aria-hidden="true"></span>
+    <span><strong>Example store, generated data.</strong> Every number below comes from a generated demo persona, not a live customer.</span>
+  </div>
+
+  <header class="hero">
+    <span class="station" aria-hidden="true">01</span>
+    <div class="kicker">Ledger view, worked example</div>
+    <h1>Every platform claims more revenue than your orders can prove.</h1>
+    <p class="lede">This mirrors the Ledger a connected store sees, built here from a
+    generated example store (we call it Bloom Box, a subscription box brand running
+    Meta, TikTok, and Snapchat) so you can see the shape of it before connecting your
+    own. One blended number from your Shopify orders, next to what the platforms
+    claim.</p>
+
+    <div class="ledger-card">
+      <div class="plumb" aria-hidden="true"></div>
+      <div>
+        <div class="lbl">Blended MER &middot; last 28 days &middot; USD</div>
+        <div class="reading mono">4.58&times;</div>
+        <div class="lbl">$29,249 revenue on $6,387 spend &middot; 582 orders</div>
+      </div>
+      <div>
+        <div class="lbl">platforms claim</div>
+        <div class="claimed mono">5.05&times;</div>
+        <div class="gapchip">platforms claim $32,264 &middot; your store made $29,249</div>
+      </div>
+      <div class="spark-block">
+        <div class="lbl">weekly MER &middot; last ~90 days</div>
+        <svg viewBox="0 0 640 150" width="320" height="75" role="img" aria-label="Weekly blended MER trend, 13 weeks, ranging from 4.19 to 6.30 times spend">
+          <path d="M4.0,60.8 L56.7,85.5 L109.3,68.7 L162.0,53.1 L214.7,72.0 L267.3,18.0 L320.0,46.9 L372.7,64.7 L425.3,99.6 L478.0,111.2 L530.7,132.0 L583.3,92.0 L636.0,108.5 L636.0,132 L4.0,132 Z" fill="var(--pl-accent-tint)" stroke="none" opacity="0.55" />
+          <path d="M4.0,60.8 L56.7,85.5 L109.3,68.7 L162.0,53.1 L214.7,72.0 L267.3,18.0 L320.0,46.9 L372.7,64.7 L425.3,99.6 L478.0,111.2 L530.7,132.0 L583.3,92.0 L636.0,108.5" fill="none" stroke="var(--pl-accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+          <circle cx="636.0" cy="108.5" r="4" fill="var(--pl-accent)" />
+        </svg>
+      </div>
+    </div>
+    <p class="note">Real accounts connect Shopify and each ad platform read-only.
+    Plumbline never touches your campaigns or your store.</p>
+  </header>
+
+  <section id="channels">
+    <span class="station" aria-hidden="true">02</span>
+    <h2>Every channel, checked against the orders</h2>
+    <p class="sub">Spend and claimed revenue come from each platform's own reporting.
+    Ledger revenue comes only from orders Plumbline can resolve to that channel with
+    real evidence. Organic and owned channels get no ad credit. What can't be
+    resolved at all is shown as its own row, never hidden.</p>
+    <div class="channels-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Channel</th>
+            <th class="num">Spend</th>
+            <th class="num">Claimed</th>
+            <th class="num">Ledger revenue</th>
+            <th class="num">Verified</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">TikTok</td>
+            <td class="num mono">$2,826</td>
+            <td class="num mono claimval">$12,015</td>
+            <td class="num mono">$5,979</td>
+            <td class="num mono">50%</td>
+            <td><span class="chip ok">Actionable</span></td>
+          </tr>
+          <tr>
+            <td class="name">Meta</td>
+            <td class="num mono">$2,575</td>
+            <td class="num mono claimval">$15,167</td>
+            <td class="num mono">$6,653</td>
+            <td class="num mono">44%</td>
+            <td><span class="chip ok">Actionable</span></td>
+          </tr>
+          <tr>
+            <td class="name">Snapchat</td>
+            <td class="num mono">$985</td>
+            <td class="num mono claimval">$5,082</td>
+            <td class="num mono">$2,072</td>
+            <td class="num mono">41%</td>
+            <td><span class="chip warn">Not enough signal</span></td>
+          </tr>
+          <tr class="organic">
+            <td class="name">Direct</td>
+            <td class="num">&ndash;</td>
+            <td class="num">&ndash;</td>
+            <td class="num mono">$5,140</td>
+            <td class="num">&ndash;</td>
+            <td><span class="chip neutral">Organic / owned</span></td>
+          </tr>
+          <tr class="organic">
+            <td class="name">Organic social</td>
+            <td class="num">&ndash;</td>
+            <td class="num">&ndash;</td>
+            <td class="num mono">$4,741</td>
+            <td class="num">&ndash;</td>
+            <td><span class="chip neutral">Organic / owned</span></td>
+          </tr>
+          <tr class="organic">
+            <td class="name">Organic search</td>
+            <td class="num">&ndash;</td>
+            <td class="num">&ndash;</td>
+            <td class="num mono">$2,877</td>
+            <td class="num">&ndash;</td>
+            <td><span class="chip neutral">Organic / owned</span></td>
+          </tr>
+          <tr class="organic">
+            <td class="name">Email</td>
+            <td class="num">&ndash;</td>
+            <td class="num">&ndash;</td>
+            <td class="num mono">$1,553</td>
+            <td class="num">&ndash;</td>
+            <td><span class="chip neutral">Organic / owned</span></td>
+          </tr>
+          <tr class="organic">
+            <td class="name">Referral</td>
+            <td class="num">&ndash;</td>
+            <td class="num">&ndash;</td>
+            <td class="num mono">$87</td>
+            <td class="num">&ndash;</td>
+            <td><span class="chip neutral">Organic / owned</span></td>
+          </tr>
+          <tr class="unattr">
+            <td class="name">Unattributed</td>
+            <td class="num">&ndash;</td>
+            <td class="num">&ndash;</td>
+            <td class="num mono">$147</td>
+            <td class="num">&ndash;</td>
+            <td><span class="chip neutral">Untracked</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Verified is ledger revenue as a share of that platform's own
+    claimed revenue for the same 28 days. The unverified remainder is a mix of
+    platform double counting and orders server-side attribution can't see.</p>
+    <p class="note">How this example's claimed numbers are made: the simulated
+    store has a known true contribution per channel, and each platform's
+    claimed revenue is that true contribution inflated by a platform-typical
+    factor, plus partial credit for organic sales the channel did not drive.
+    Those are the same two mechanisms that make real dashboards add up to more
+    than a real store sold. The ledger side counts the simulated orders
+    themselves, resolved to channels by the same evidence rules the product
+    applies to real orders. On a live account nothing is simulated: claimed
+    numbers come straight from each platform's reporting API, and the ledger
+    comes from your Shopify orders.</p>
+  </section>
+
+  <section id="cta">
+    <span class="station" aria-hidden="true">03</span>
+    <div class="cta-block">
+      <h2>Want to see this against your own orders?</h2>
+      <p>Design partners get the full Ledger connected to their real Shopify store
+      and ad accounts, free for 3 months, with the founder on call.</p>
+      <a class="btn" href="/partners.html">Get early access</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>Plumbline Labs &middot; <a href="/index.html">Home</a> &middot;
+    <a href="/partners.html">Design partners</a> &middot;
+    <a href="/data-use.html">How we use your data</a> &middot;
+    <a href="/privacy.html">Privacy</a> &middot; <a href="/terms.html">Terms</a> &middot;
+    <a href="/dpa.html">DPA</a></p>
+    <p style="margin-top:6px"><span class="foot-bob" aria-hidden="true"></span>True vertical, for ad budgets.</p>
+  </footer>
+</div>
+
+<!--
+Generated by measure/scripts/_demo_page_data.py, persona: Bloom Box
+
+{
+  "persona": "Bloom Box",
+  "selection": {
+    "spend_band": [5000.0, 15000.0],
+    "min_paid_share_pct": 50.0,
+    "required_paid_set": ["google", "meta", "tiktok"],
+    "excluded_personas": [
+      "Basecamp Trail Co.", "Cabot & Wren", "Fernwood Supply Co.",
+      "Grand Prize Garage", "Marlowe & Finch", "Nova Cosmetics"
+    ],
+    "candidates_evaluated": ["Verve Beauty", "Bloom Box", "Lush Living Home"],
+    "fallback_used": false
+  },
+  "generator": {
+    "base_seed": 42,
+    "end_date": "2026-07-01",
+    "tenant_id_placeholder": 999,
+    "script": "measure/scripts/_demo_page_data.py"
+  },
+  "currency": "USD",
+  "platforms": ["meta", "tiktok", "snapchat"],
+  "hero": {
+    "window_start": "2026-06-04",
+    "window_end": "2026-07-01",
+    "window_days": 28,
+    "spend": 6386.77,
+    "revenue": 29249.21,
+    "orders": 582,
+    "new_customers": 361,
+    "claimed_revenue": 32264.11,
+    "blended_mer": 4.5797,
+    "claimed_mer": 5.0517,
+    "new_customer_cpa": 17.69,
+    "overclaim": 3014.9
+  },
+  "channels": [
+    {"channel": "tiktok", "group": "paid", "spend": 2825.93, "claimed_revenue": 12015.11, "ledger_revenue": 5978.85, "ledger_orders": 113, "new_customer_orders": 69, "verified_pct": 49.8, "overclaim_pct": 50.2, "verdict": "Actionable", "chip": "ok"},
+    {"channel": "meta", "group": "paid", "spend": 2575.49, "claimed_revenue": 15167.29, "ledger_revenue": 6652.6, "ledger_orders": 140, "new_customer_orders": 89, "verified_pct": 43.9, "overclaim_pct": 56.1, "verdict": "Actionable", "chip": "ok"},
+    {"channel": "snapchat", "group": "paid", "spend": 985.35, "claimed_revenue": 5081.71, "ledger_revenue": 2072.41, "ledger_orders": 41, "new_customer_orders": 23, "verified_pct": 40.8, "overclaim_pct": 59.2, "verdict": "Not enough signal", "chip": "warn"},
+    {"channel": "direct", "group": "organic", "spend": null, "claimed_revenue": null, "ledger_revenue": 5140.38, "ledger_orders": 100, "new_customer_orders": 64, "verified_pct": null, "overclaim_pct": null, "verdict": "Organic / owned", "chip": "neutral"},
+    {"channel": "organic_social", "group": "organic", "spend": null, "claimed_revenue": null, "ledger_revenue": 4740.86, "ledger_orders": 96, "new_customer_orders": 56, "verified_pct": null, "overclaim_pct": null, "verdict": "Organic / owned", "chip": "neutral"},
+    {"channel": "organic_search", "group": "organic", "spend": null, "claimed_revenue": null, "ledger_revenue": 2877.31, "ledger_orders": 56, "new_customer_orders": 36, "verified_pct": null, "overclaim_pct": null, "verdict": "Organic / owned", "chip": "neutral"},
+    {"channel": "email", "group": "organic", "spend": null, "claimed_revenue": null, "ledger_revenue": 1552.82, "ledger_orders": 29, "new_customer_orders": 21, "verified_pct": null, "overclaim_pct": null, "verdict": "Organic / owned", "chip": "neutral"},
+    {"channel": "referral", "group": "organic", "spend": null, "claimed_revenue": null, "ledger_revenue": 87.38, "ledger_orders": 3, "new_customer_orders": 2, "verified_pct": null, "overclaim_pct": null, "verdict": "Organic / owned", "chip": "neutral"},
+    {"channel": "unattributed", "group": "unattributed", "spend": null, "claimed_revenue": null, "ledger_revenue": 146.6, "ledger_orders": 4, "new_customer_orders": 1, "verified_pct": null, "overclaim_pct": null, "verdict": "Untracked", "chip": "neutral"}
+  ],
+  "sparkline_weekly_mer": [
+    {"week_start": "2026-04-02", "week_end": "2026-04-08", "spend": 1240.68, "revenue": 6833.12, "mer": 5.5076},
+    {"week_start": "2026-04-09", "week_end": "2026-04-15", "spend": 1307.12, "revenue": 6604.53, "mer": 5.0527},
+    {"week_start": "2026-04-16", "week_end": "2026-04-22", "spend": 1354.64, "revenue": 7262.1, "mer": 5.3609},
+    {"week_start": "2026-04-23", "week_end": "2026-04-29", "spend": 1362.27, "revenue": 7696.66, "mer": 5.6499},
+    {"week_start": "2026-04-30", "week_end": "2026-05-06", "spend": 1361.39, "revenue": 7216.66, "mer": 5.301},
+    {"week_start": "2026-05-07", "week_end": "2026-05-13", "spend": 1314.84, "revenue": 8279.12, "mer": 6.2967},
+    {"week_start": "2026-05-14", "week_end": "2026-05-20", "spend": 1357.53, "revenue": 7824.45, "mer": 5.7638},
+    {"week_start": "2026-05-21", "week_end": "2026-05-27", "spend": 1390.36, "revenue": 7556.32, "mer": 5.4348},
+    {"week_start": "2026-05-28", "week_end": "2026-06-03", "spend": 1482.72, "revenue": 7104.82, "mer": 4.7917},
+    {"week_start": "2026-06-04", "week_end": "2026-06-10", "spend": 1594.86, "revenue": 7300.9, "mer": 4.5778},
+    {"week_start": "2026-06-11", "week_end": "2026-06-17", "spend": 1632.35, "revenue": 6846.85, "mer": 4.1945},
+    {"week_start": "2026-06-18", "week_end": "2026-06-24", "spend": 1571.15, "revenue": 7749.54, "mer": 4.9324},
+    {"week_start": "2026-06-25", "week_end": "2026-07-01", "spend": 1588.4, "revenue": 7351.92, "mer": 4.6285}
+  ]
+}
+-->
+</body>
+</html>
