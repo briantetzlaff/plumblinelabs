@@ -16,11 +16,21 @@
     --slate:#6B675C;
     --brass:#D96C1E;
     --brass-deep:#7C3A0B;
+    --accent-deep:#B55814;
     --rule:#E3E0D8;
     --spine-x:148px;
+    --shadow-soft:0 1px 2px rgba(51,49,44,.05),0 8px 24px rgba(51,49,44,.06);
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   html{overflow-x:hidden;}
+  @keyframes spine-draw{from{transform:scaleY(0);}to{transform:scaleY(1);}}
+  @keyframes bob-swing{
+    0%{transform:translateX(-50%) rotate(0deg);}
+    35%{transform:translateX(-50%) rotate(2deg);}
+    60%{transform:translateX(-50%) rotate(-1deg);}
+    85%{transform:translateX(-50%) rotate(.3deg);}
+    100%{transform:translateX(-50%) rotate(0deg);}
+  }
   body{
     background:var(--paper);
     color:var(--ink);
@@ -32,11 +42,20 @@
   .spine{
     position:fixed;top:0;bottom:0;left:var(--spine-x);
     width:2px;background:var(--brass);z-index:0;pointer-events:none;
+    transform-origin:top;
+    animation:spine-draw .7s cubic-bezier(.2,.7,.3,1) both;
   }
   .spine::before{
     content:"";position:absolute;top:0;bottom:0;left:0;width:9px;
     background:repeating-linear-gradient(to bottom,
       var(--rule) 0,var(--rule) 1px,transparent 1px,transparent 26px);
+  }
+  .spine .bob{
+    position:absolute;bottom:36px;left:50%;
+    width:14px;height:14px;background:var(--brass);
+    clip-path:polygon(50% 100%,0 30%,20% 0,80% 0,100% 30%);
+    transform-origin:50% 0;
+    animation:bob-swing 1.6s cubic-bezier(.2,.7,.3,1) .55s both;
   }
   .wrap{
     position:relative;z-index:1;
@@ -55,21 +74,28 @@
   .brand{
     font-family:"Jost",sans-serif;font-weight:500;
     font-size:1.05rem;letter-spacing:-0.01em;text-decoration:none;color:var(--ink);
+    background-image:none;
   }
   .brand span{color:var(--brass);}
   .back{
     font-family:"IBM Plex Mono",monospace;font-size:12.5px;
     color:var(--slate);text-decoration:none;letter-spacing:.04em;
+    background-image:none;transition:color .2s ease;
   }
-  .back:hover{color:var(--brass-deep);}
+  .back:hover{color:var(--accent-deep);}
 
   .doc-label{
     font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.2em;
     text-transform:uppercase;color:var(--brass-deep);margin-bottom:18px;
+    position:relative;display:inline-block;padding-bottom:12px;
+  }
+  .doc-label::after{
+    content:"";position:absolute;left:0;bottom:0;width:28px;height:2px;
+    background:var(--brass);
   }
   h1{
     font-family:"Jost",sans-serif;font-weight:500;
-    font-size:clamp(2rem,4.5vw,3rem);letter-spacing:-0.025em;line-height:1.05;
+    font-size:clamp(2rem,4.5vw,3.2rem);letter-spacing:-0.025em;line-height:1.05;
     margin-bottom:16px;
   }
   .effective{
@@ -92,7 +118,13 @@
   p{margin-bottom:14px;color:#384450;}
   ul{margin:0 0 14px 0;padding-left:22px;}
   li{margin-bottom:8px;color:#384450;}
-  a{color:var(--brass-deep);}
+  a{
+    color:var(--brass-deep);text-decoration:none;
+    background-image:linear-gradient(var(--accent-deep),var(--accent-deep));
+    background-repeat:no-repeat;background-position:0 100%;background-size:0 1px;
+    transition:background-size .3s cubic-bezier(.2,.7,.3,1),color .2s ease;
+  }
+  a:hover{background-size:100% 1px;color:var(--accent-deep);}
   strong{font-weight:500;color:var(--ink);}
 
   .contact-block{
@@ -103,9 +135,10 @@
     font-size:13.5px;
     line-height:2;
     color:var(--slate);
+    box-shadow:var(--shadow-soft);
   }
-  .contact-block a{text-decoration:none;border-bottom:1px solid var(--rule);color:var(--ink);}
-  .contact-block a:hover{border-color:var(--brass);}
+  .contact-block a{text-decoration:none;border-bottom:1px solid var(--rule);color:var(--ink);background-image:none;}
+  .contact-block a:hover{border-color:var(--accent-deep);}
 
   :focus-visible{outline:2px solid var(--brass);outline-offset:3px;}
 
@@ -114,11 +147,16 @@
     .wrap{padding-left:calc(var(--spine-x) + 26px);padding-right:24px;}
     .spine::before{display:none;}
   }
+
+  @media (prefers-reduced-motion: reduce){
+    .spine,.spine .bob{animation:none;}
+    a{transition:none;}
+  }
 </style>
 </head>
 <body>
 
-<div class="spine" aria-hidden="true"></div>
+<div class="spine" aria-hidden="true"><span class="bob"></span></div>
 
 <div class="wrap">
   <div class="topbar">
