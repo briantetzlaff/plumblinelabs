@@ -305,8 +305,44 @@
     inflate real dashboards. On a live account nothing is simulated.</p>
   </section>
 
-  <section id="cta">
+  <section id="measure">
     <span class="station" aria-hidden="true">03</span>
+    <h2>What a marginal dollar returns, with honest error bars</h2>
+    <p class="sub">The Measure view for the same store. The engine estimates
+    what each channel returns per extra dollar from the order history alone.
+    When the interval is too wide to act on, the reading is withheld and
+    Plumbline says so.</p>
+    <div style="background:var(--pl-surface);border:0.5px solid var(--pl-rule);
+                border-radius:10px;padding:22px 26px 18px;max-width:940px;
+                box-shadow:var(--pl-shadow)">
+      <h3 style="font-size:17px">Marginal return per extra dollar</h3>
+      <div style="font-size:12px;color:var(--pl-ink-faint);margin-bottom:14px">
+        point estimate with 95% interval &middot; verdicts gate what you may act on</div>
+      <div style="display:grid;grid-template-columns:minmax(96px,150px) 1fr
+                  minmax(72px,96px);gap:0 18px;align-items:end">
+        <span style="font-size:12px;color:var(--pl-ink-faint)">channel</span>
+        <svg viewBox="0 0 700 36" aria-hidden="true" style="display:block;width:100%;height:auto"><line x1="8" y1="35" x2="692" y2="35" stroke="var(--pl-rule-strong)" stroke-width="1"/><text x="8.0" y="28" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="var(--pl-muted)" paint-order="stroke" stroke="var(--pl-surface)" stroke-width="4" stroke-linejoin="round">0</text><text x="180.3" y="28" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="var(--pl-muted)" paint-order="stroke" stroke="var(--pl-surface)" stroke-width="4" stroke-linejoin="round">1</text><text x="352.6" y="28" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="var(--pl-muted)" paint-order="stroke" stroke="var(--pl-surface)" stroke-width="4" stroke-linejoin="round">2</text><text x="525.0" y="28" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="var(--pl-muted)" paint-order="stroke" stroke="var(--pl-surface)" stroke-width="4" stroke-linejoin="round">3</text><polygon points="180.3,25 174.8,17 176.8,14 183.8,14 185.8,17" fill="var(--pl-accent)"/><line x1="180.3" y1="25" x2="180.3" y2="36" stroke="var(--pl-accent)" stroke-width="2"/><text x="180.3" y="11" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="var(--pl-accent-deep)" paint-order="stroke" stroke="var(--pl-surface)" stroke-width="4" stroke-linejoin="round">1.0</text></svg>
+        <span style="font-size:12px;color:var(--pl-ink-faint);text-align:right">reading</span>
+      </div>
+<div style="display:grid;grid-template-columns:minmax(96px,150px) 1fr minmax(72px,96px);gap:0 18px;align-items:center;"><div style="padding:14px 0"><div style="font-family:Jost,sans-serif;font-weight:500;font-size:16px">Meta</div><div style="margin-top:2px"><span class="chip ok">Actionable</span></div></div><svg viewBox="0 0 700 88" role="img" aria-label="Meta marginal ROAS 3.03, 95 percent interval 2.46 to 3.82" style="display:block;width:100%;height:auto"><line x1="180.3" y1="0" x2="180.3" y2="88" stroke="var(--pl-accent)" stroke-width="2" opacity="0.9"/><line x1="8" y1="44" x2="692" y2="44" stroke="var(--pl-rule)" stroke-width="1"/><rect x="431.1" y="35" width="234.6" height="18" rx="9" fill="var(--pl-ink)" opacity="0.13"/><line x1="529.9" y1="26" x2="529.9" y2="62" stroke="var(--pl-ink)" stroke-width="3"/><text x="529.9" y="18" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="14" font-weight="500" fill="var(--pl-ink)" paint-order="stroke" stroke="var(--pl-surface)" stroke-width="4" stroke-linejoin="round">3.03</text><text x="427.1" y="70" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="12" fill="var(--pl-ink-faint)" paint-order="stroke" stroke="var(--pl-surface)" stroke-width="4" stroke-linejoin="round">2.46</text><text x="661.7" y="70" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="12" fill="var(--pl-ink-faint)" paint-order="stroke" stroke="var(--pl-surface)" stroke-width="4" stroke-linejoin="round">3.82</text></svg><div style="text-align:right;padding:14px 0"><div class="mono" style="font-size:22px;line-height:1.1;color:var(--pl-ink)">3.03<span style="font-size:14px;color:var(--pl-ink-faint)">&times;</span></div><div class="mono" style="font-size:12px;color:var(--pl-ink-faint)">2.46&#8211;3.82</div></div></div>
+<div style="display:grid;grid-template-columns:minmax(96px,150px) 1fr minmax(72px,96px);gap:0 18px;align-items:center;border-top:0.5px solid var(--pl-rule);"><div style="padding:14px 0"><div style="font-family:Jost,sans-serif;font-weight:500;font-size:16px">TikTok</div><div style="margin-top:2px"><span class="chip warn">Not enough signal</span></div></div><svg viewBox="0 0 700 88" role="img" aria-label="TikTok marginal ROAS 1.18, 95 percent interval -0.23 to 2.05" style="display:block;width:100%;height:auto"><line x1="180.3" y1="0" x2="180.3" y2="88" stroke="var(--pl-accent)" stroke-width="2" opacity="0.9"/><line x1="8" y1="44" x2="692" y2="44" stroke="var(--pl-rule)" stroke-width="1"/><rect x="8.0" y="35" width="352.6" height="18" rx="9" fill="var(--pl-ink)" opacity="0.13"/><line x1="212.0" y1="26" x2="212.0" y2="62" stroke="var(--pl-ink)" stroke-width="3"/><text x="212.0" y="18" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="14" font-weight="500" fill="var(--pl-ink)" paint-order="stroke" stroke="var(--pl-surface)" stroke-width="4" stroke-linejoin="round">1.18</text><text x="44.0" y="70" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="12" fill="var(--pl-ink-faint)" paint-order="stroke" stroke="var(--pl-surface)" stroke-width="4" stroke-linejoin="round">-0.23</text><text x="364.6" y="70" text-anchor="start" font-family="IBM Plex Mono,monospace" font-size="12" fill="var(--pl-ink-faint)" paint-order="stroke" stroke="var(--pl-surface)" stroke-width="4" stroke-linejoin="round">2.05</text></svg><div style="text-align:right;padding:14px 0"><div class="mono" style="font-size:20px;color:var(--pl-muted)">withheld</div><div style="font-size:12px;color:var(--pl-ink-faint)">interval too wide</div></div></div>
+<div style="display:grid;grid-template-columns:minmax(96px,150px) 1fr minmax(72px,96px);gap:0 18px;align-items:center;border-top:0.5px solid var(--pl-rule);"><div style="padding:14px 0"><div style="font-family:Jost,sans-serif;font-weight:500;font-size:16px">Snapchat</div><div style="margin-top:2px"><span class="chip warn">Not enough signal</span></div></div><svg viewBox="0 0 700 88" role="img" aria-label="Snapchat marginal ROAS 2.27, 95 percent interval 1.03 to 3.47" style="display:block;width:100%;height:auto"><line x1="180.3" y1="0" x2="180.3" y2="88" stroke="var(--pl-accent)" stroke-width="2" opacity="0.9"/><line x1="8" y1="44" x2="692" y2="44" stroke="var(--pl-rule)" stroke-width="1"/><rect x="184.9" y="35" width="421.1" height="18" rx="9" fill="var(--pl-ink)" opacity="0.13"/><line x1="399.6" y1="26" x2="399.6" y2="62" stroke="var(--pl-ink)" stroke-width="3"/><text x="399.6" y="18" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="14" font-weight="500" fill="var(--pl-ink)" paint-order="stroke" stroke="var(--pl-surface)" stroke-width="4" stroke-linejoin="round">2.27</text><text x="180.9" y="70" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="12" fill="var(--pl-ink-faint)" paint-order="stroke" stroke="var(--pl-surface)" stroke-width="4" stroke-linejoin="round">1.03</text><text x="610.0" y="70" text-anchor="start" font-family="IBM Plex Mono,monospace" font-size="12" fill="var(--pl-ink-faint)" paint-order="stroke" stroke="var(--pl-surface)" stroke-width="4" stroke-linejoin="round">3.47</text></svg><div style="text-align:right;padding:14px 0"><div class="mono" style="font-size:20px;color:var(--pl-muted)">withheld</div><div style="font-size:12px;color:var(--pl-ink-faint)">interval too wide</div></div></div>
+      <div style="display:grid;grid-template-columns:minmax(96px,150px) 1fr
+                  minmax(72px,96px);gap:0 18px;border-top:0.5px solid var(--pl-rule)">
+        <span></span>
+        <span style="font-size:12px;color:var(--pl-ink-faint);padding-top:8px">
+          left of the line: a marginal dollar returns less than a dollar</span>
+        <span></span>
+      </div>
+    </div>
+    <p class="note">Computed by the real measurement engine on this example
+    store&#8217;s 53 weeks of generated history. Nothing on this page is
+    hand-drawn: the withheld reading is the product working as designed.</p>
+  </section>
+
+
+  <section id="cta">
+    <span class="station" aria-hidden="true">04</span>
     <div class="cta-block">
       <h2>Want this against your own orders?</h2>
       <p>Design partners get the full Ledger on their real store, free for 3 months.</p>
@@ -397,9 +433,19 @@ persisted engine verdicts (tenancy.tenant_engine_verdict, tenant 139
 actionable; tiktok insufficient_signal; snapchat insufficient_signal;
 measure unlocked, n_actionable=1, 53 weeks). The generator JSON above
 retains its original heuristic verdict fields for provenance only; the
-rendered chips no longer come from that heuristic. A Measure section
-(marginal return with intervals) is drafted but HELD pending engine
-point/interval estimator unification (V1 spec section 6, 2026-07-13).
+rendered chips no longer come from that heuristic.
+
+Measure section added 2026-07-13 (late): baked by
+measure/scripts/_demo_measure_section.py from the tenant-139 row
+re-persisted with persist_verdicts.py --point-def draw_median (the
+point is the median of the same bootstrap draws as the interval, so it
+is contained by construction; the raw fit points are preserved in the
+row's fit_point_mroas keys: meta 3.8780, tiktok 0.7164, snapchat
+1.9178). draw_median is an OPT-IN flag ratified for demo use; the
+product-wide default remains "fit" pending sweep re-validation (V1
+spec section 6, 2026-07-13). Values: meta 3.0286 [2.4550, 3.8167]
+actionable; tiktok 1.1840 [-0.2331, 2.0463] insufficient_signal;
+snapchat 2.2727 [1.0265, 3.4702] insufficient_signal.
 -->
 </body>
 </html>
