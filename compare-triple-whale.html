@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Plumbline vs. Triple Whale: a measurement layer, not a dashboard</title>
+<meta name="description" content="Triple Whale reports where credit appears to come from. Plumbline measures what your ad spend actually caused — anchored to your Shopify orders, honest about what it can't yet know. An even-handed comparison." />
+<meta name="robots" content="noindex" />
+<!-- Open Graph / social preview -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Plumbline Labs" />
+<meta property="og:url" content="https://plumblinelabs.com/compare-triple-whale.html" />
+<meta property="og:title" content="Plumbline vs. Triple Whale: a measurement layer, not a dashboard" />
+<meta property="og:description" content="Triple Whale reports where credit appears to come from. Plumbline measures what your ad spend actually caused — anchored to your Shopify orders, and honest about what it can't yet know." />
+<meta property="og:image" content="https://plumblinelabs.com/og-compare-triple-whale.png" />
+<meta property="og:image:alt" content="Plumbline vs. Triple Whale — a neutral measurement layer compared to a pixel-based dashboard." />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Plumbline vs. Triple Whale: a measurement layer, not a dashboard" />
+<meta name="twitter:description" content="Triple Whale reports where credit appears to come from. Plumbline measures what your ad spend actually caused — anchored to your Shopify orders, and honest about what it can't yet know." />
+<meta name="twitter:image" content="https://plumblinelabs.com/og-compare-triple-whale.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 31 4 12l4-10h16l4 10z' fill='%23D96C1E'/%3E%3C/svg%3E" />
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500&family=Public+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  /* Field-notebook theme — kept in sync with index.html / dashboard tokens (locked 2026-07-02) */
+  :root{
+    --pl-bg:#F5F3EF; --pl-surface:#FCFBF9; --pl-sunken:#EAE7DF;
+    --pl-ink:#33312C; --pl-ink-soft:#6B675C; --pl-ink-faint:#84806F;
+    --pl-muted:#A8A492; --pl-rule:#E3E0D8; --pl-rule-strong:#CFCBBE;
+    --pl-accent:#D96C1E; --pl-accent-ink:#7C3A0B; --pl-accent-tint:#F6E3D2;
+    --pl-ok-bg:#E2E8D8; --pl-ok-text:#3E5324;
+    --pl-warn-bg:#F4E5CE; --pl-warn-text:#7C5A1C;
+    --pl-neutral-bg:#EAE7DF; --pl-neutral-text:#6B675C;
+    --pl-accent-deep:#B55814;
+    --pl-shadow:0 1px 2px rgba(51,49,44,.05),0 8px 24px rgba(51,49,44,.06);
+    --spine-x:120px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;overflow-x:hidden;}
+  body{background:var(--pl-bg);color:var(--pl-ink);
+       font-family:"Public Sans",system-ui,sans-serif;font-size:16px;line-height:1.65;
+       -webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  h1,h2,h3{font-family:"Jost",sans-serif;font-weight:500;line-height:1.25;}
+  .mono{font-family:"IBM Plex Mono",monospace;font-feature-settings:"tnum";}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--pl-accent);outline-offset:2px;border-radius:2px;}
+
+  .spine{position:fixed;top:0;bottom:0;left:var(--spine-x);width:2px;
+         background:var(--pl-accent);z-index:0;pointer-events:none;
+         transform-origin:top;animation:spine-draw .7s cubic-bezier(.2,.7,.3,1) both;}
+  .spine::before{content:"";position:absolute;top:0;bottom:0;left:10px;width:8px;
+    background:repeating-linear-gradient(to bottom,var(--pl-rule-strong) 0,var(--pl-rule-strong) 1px,transparent 1px,transparent 26px);}
+  .spine .bob{position:absolute;bottom:36px;left:50%;transform-origin:50% 100%;
+    width:14px;height:14px;background:var(--pl-accent);
+    clip-path:polygon(50% 100%,0 30%,20% 0,80% 0,100% 30%);
+    animation:bob-settle 1.6s cubic-bezier(.2,.7,.3,1) .7s both;}
+  @keyframes spine-draw{from{transform:scaleY(0);}to{transform:scaleY(1);}}
+  @keyframes bob-settle{
+    0%{opacity:0;transform:translateX(-50%) rotate(2deg);}
+    18%{opacity:1;transform:translateX(-50%) rotate(2deg);}
+    55%{transform:translateX(-50%) rotate(-1deg);}
+    100%{opacity:1;transform:translateX(-50%) rotate(0deg);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .spine{animation:none;transform:none;}
+    .spine .bob{animation:none;opacity:1;transform:translateX(-50%) rotate(0deg);}
+  }
+  .wrap{position:relative;z-index:1;padding-left:calc(var(--spine-x) + 52px);
+        padding-right:44px;max-width:1120px;}
+  .station{position:absolute;left:-34px;top:4px;font-family:"IBM Plex Mono",monospace;
+           font-size:12px;color:var(--pl-accent-ink);letter-spacing:0.02em;}
+  @media (max-width:760px){
+    :root{--spine-x:14px;}
+    .wrap{padding-left:calc(var(--spine-x) + 22px);padding-right:18px;}
+    .spine::before{display:none;}
+    .station{display:none;}
+    nav .cta{margin-left:0;}
+    .versus{display:block;overflow-x:auto;}
+    .versus th,.versus td{min-width:150px;}
+    .hero{padding-top:40px;}
+  }
+
+  nav{display:flex;align-items:center;gap:14px 26px;padding:26px 0;flex-wrap:wrap;}
+  .wordmark{font-family:"Jost",sans-serif;font-weight:500;letter-spacing:0.16em;font-size:14px;text-decoration:none;color:var(--pl-ink);}
+  nav a{color:var(--pl-ink-soft);text-decoration:none;font-size:14px;padding-bottom:2px;
+        background-image:linear-gradient(var(--pl-ink),var(--pl-ink));background-repeat:no-repeat;
+        background-position:0 100%;background-size:0% 1px;transition:background-size .2s ease,color .15s;}
+  nav a:hover{color:var(--pl-ink);background-size:100% 1px;}
+  nav .cta{margin-left:auto;background:var(--pl-ink);color:var(--pl-surface);
+           padding:8px 18px;border-radius:6px;font-weight:500;background-image:none;}
+  nav .cta:hover{background:#221f1a;color:var(--pl-surface);background-size:0 1px;}
+
+  header.hero{position:relative;padding:72px 0 64px;border-bottom:0.5px solid var(--pl-rule);}
+  .kicker{font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:var(--pl-accent-ink);margin-bottom:14px;}
+  .hero h1{font-size:clamp(32px,5vw,54px);letter-spacing:-0.01em;max-width:17ch;}
+  .hero p.lede{max-width:56ch;color:var(--pl-ink-soft);margin:20px 0 0;font-size:19px;}
+
+  section{position:relative;padding:60px 0;border-bottom:0.5px solid var(--pl-rule);}
+  section h2{font-size:clamp(24px,3vw,32px);margin-bottom:10px;}
+  .sub{color:var(--pl-ink-soft);max-width:60ch;margin-bottom:32px;}
+  p.body{max-width:64ch;color:var(--pl-ink-soft);margin-bottom:16px;}
+  p.body strong{color:var(--pl-ink);font-weight:500;}
+
+  /* short-answer callout */
+  .tldr{background:var(--pl-surface);border:0.5px solid var(--pl-rule);border-left:2px solid var(--pl-accent);
+        box-shadow:var(--pl-shadow);border-radius:0 10px 10px 0;padding:26px 30px;max-width:720px;}
+  .tldr .lbl{font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--pl-accent-ink);margin-bottom:10px;}
+  .tldr p{font-size:18px;color:var(--pl-ink);max-width:60ch;}
+  .tldr p + p{margin-top:12px;font-size:16px;color:var(--pl-ink-soft);}
+
+  /* two-column category framing */
+  .split{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;max-width:860px;}
+  .card{background:var(--pl-surface);border:0.5px solid var(--pl-rule);border-radius:10px;padding:24px;
+        box-shadow:var(--pl-shadow);}
+  .card.them{background:var(--pl-sunken);box-shadow:none;}
+  .card .who{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:0.04em;color:var(--pl-ink-faint);text-transform:uppercase;}
+  .card h3{font-size:20px;margin:8px 0 12px;}
+  .card p{font-size:14px;color:var(--pl-ink-soft);}
+  .card .tag{display:inline-block;font-size:12px;padding:2px 9px;border-radius:6px;margin-top:14px;}
+  .tag.them{background:var(--pl-neutral-bg);color:var(--pl-neutral-text);}
+  .tag.us{background:var(--pl-ok-bg);color:var(--pl-ok-text);}
+
+  .versus{width:100%;border-collapse:collapse;font-size:14px;max-width:900px;}
+  .versus th{font-family:"Jost",sans-serif;font-weight:500;text-align:left;padding:11px 14px;
+             border-bottom:0.5px solid var(--pl-rule-strong);}
+  .versus th.us{color:var(--pl-accent-ink);}
+  .versus td{padding:11px 14px;border-bottom:0.5px solid var(--pl-rule);color:var(--pl-ink-soft);vertical-align:top;}
+  .versus td:first-child{color:var(--pl-ink);font-weight:500;width:26%;}
+  .versus td.us{color:var(--pl-ink);}
+  .versus tr:hover td{background:var(--pl-surface);}
+
+  .wedges{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;}
+  .wedge{background:var(--pl-surface);border:0.5px solid var(--pl-rule);border-radius:10px;padding:22px;
+         box-shadow:var(--pl-shadow);transition:transform .15s ease,box-shadow .15s ease;}
+  .wedge:hover{transform:translateY(-1px);box-shadow:0 2px 4px rgba(51,49,44,.07),0 12px 28px rgba(51,49,44,.09);}
+  .wedge .step{font-size:12px;color:var(--pl-accent-ink);letter-spacing:0.08em;font-family:"IBM Plex Mono",monospace;}
+  .wedge h3{font-size:18px;margin:6px 0 8px;}
+  .wedge p{font-size:14px;color:var(--pl-ink-soft);}
+
+  .fair{background:var(--pl-sunken);border-radius:10px;padding:30px 32px;max-width:820px;box-shadow:var(--pl-shadow);}
+  .fair h2{font-size:24px;}
+  .fair ul{list-style:none;margin-top:18px;display:grid;gap:12px;}
+  .fair li{padding-left:26px;position:relative;color:var(--pl-ink-soft);font-size:15px;}
+  .fair li::before{content:"";position:absolute;left:0;top:0.55em;width:13px;height:2px;background:var(--pl-accent);}
+
+  .who-should{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;max-width:860px;}
+  .pick{background:var(--pl-surface);border:0.5px solid var(--pl-rule);border-radius:10px;padding:22px;box-shadow:var(--pl-shadow);}
+  .pick.us{border:2px solid var(--pl-accent);}
+  .pick h3{font-size:17px;margin-bottom:10px;}
+  .pick p{font-size:14px;color:var(--pl-ink-soft);}
+
+  .cta-band{padding:60px 0;}
+  .cta-band h2{font-size:clamp(24px,3vw,30px);max-width:20ch;}
+  .cta-band p{color:var(--pl-ink-soft);max-width:54ch;margin:14px 0 26px;}
+  .cta-band a.go{display:inline-block;background:var(--pl-ink);color:var(--pl-surface);
+                 padding:12px 26px;border-radius:6px;text-decoration:none;font-weight:500;transition:background .15s ease;}
+  .cta-band a.go:hover{background:#221f1a;}
+  .cta-band a.sec{display:inline-block;margin-left:16px;color:var(--pl-ink-soft);text-decoration:none;font-size:14px;
+                  padding-bottom:2px;background-image:linear-gradient(var(--pl-ink-soft),var(--pl-ink-soft));
+                  background-repeat:no-repeat;background-position:0 100%;background-size:0% 1px;transition:background-size .2s ease;}
+  .cta-band a.sec:hover{background-size:100% 1px;}
+
+  footer{padding:44px 0 60px;font-size:13px;color:var(--pl-ink-faint);}
+  footer a{color:var(--pl-ink-soft);padding-bottom:1px;
+        background-image:linear-gradient(var(--pl-ink-soft),var(--pl-ink-soft));background-repeat:no-repeat;
+        background-position:0 100%;background-size:0% 1px;transition:background-size .2s ease;}
+  footer a:hover{background-size:100% 1px;}
+  .foot-bob{display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:middle;
+            background:var(--pl-accent);clip-path:polygon(50% 100%,0 30%,20% 0,80% 0,100% 30%);}
+  .disclaimer{font-size:12px;color:var(--pl-muted);max-width:70ch;margin-top:22px;}
+</style>
+</head>
+<body>
+<div class="spine" aria-hidden="true"><span class="bob"></span></div>
+
+<div class="wrap">
+  <nav>
+    <a href="/" class="wordmark">PLUMBLINE</a>
+    <a href="/#how">How it works</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/demo.html">Example store</a>
+    <a class="cta" href="/partners.html">Get early access</a>
+    <a href="https://app.plumblinelabs.com/">Sign in</a>
+  </nav>
+
+  <header class="hero">
+    <span class="station" aria-hidden="true">01</span>
+    <div class="kicker">Plumbline vs. Triple Whale</div>
+    <h1>One reports where credit appears. One measures what spend caused.</h1>
+    <p class="lede">Triple Whale is a strong ecommerce dashboard with pixel-based attribution.
+    Plumbline is a neutral measurement layer anchored to your Shopify orders. They answer
+    different questions — here's an even-handed look at which one you actually need.</p>
+  </header>
+
+  <section>
+    <span class="station" aria-hidden="true">02</span>
+    <div class="tldr">
+      <div class="lbl">The short answer</div>
+      <p>If you want a fast, polished cockpit for daily ecommerce numbers, Triple Whale is
+      genuinely good at that. If you want to know <strong>which channels are actually growing
+      your revenue</strong> — and to be told honestly when your data can't yet support that
+      answer — that's the job Plumbline was built for.</p>
+      <p>They aren't really rivals on the same axis. Many stores will keep a dashboard and
+      add Plumbline as the measurement second opinion that decides where budget goes.</p>
+    </div>
+  </section>
+
+  <section>
+    <span class="station" aria-hidden="true">03</span>
+    <h2>Two different tools, honestly labeled</h2>
+    <p class="sub">The clearest way to compare them is to stop treating them as the same product.</p>
+    <div class="split">
+      <div class="card them">
+        <div class="who">Triple Whale</div>
+        <h3>An analytics &amp; attribution dashboard</h3>
+        <p>A tracking pixel stitches customer journeys across touchpoints and assigns
+        multi-touch credit, wrapped in a mature real-time reporting suite. The strength is
+        breadth, polish, and operational speed. Attribution modeling sits on paid tiers;
+        true incrementality testing lives in their top, sales-gated tier.</p>
+        <span class="tag them">Where does credit appear to come from?</span>
+      </div>
+      <div class="card">
+        <div class="who">Plumbline</div>
+        <h3>A neutral measurement layer</h3>
+        <p>No tracking pixel. Every channel is measured against the one number no platform
+        can inflate — your actual Shopify order revenue — with honest error bars and a
+        verdict on whether your data can support a recommendation at all. It audits claims
+        rather than manufacturing a competing one.</p>
+        <span class="tag us">What did this spend actually cause?</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <span class="station" aria-hidden="true">04</span>
+    <h2>Head to head</h2>
+    <p class="sub">Same rows, honestly filled in for both sides — including where they're ahead.</p>
+    <table class="versus">
+      <tr><th>&nbsp;</th><th>Triple Whale</th><th class="us">Plumbline</th></tr>
+      <tr>
+        <td>What it measures against</td>
+        <td>Pixel-tracked touchpoints and conversions</td>
+        <td class="us">Your total Shopify order revenue</td>
+      </tr>
+      <tr>
+        <td>Method</td>
+        <td>Multi-touch attribution from a first-party pixel</td>
+        <td class="us">Cross-channel response modeling + verdicts, no user tracking</td>
+      </tr>
+      <tr>
+        <td>Neutrality</td>
+        <td>The pixel is their own asset generating the credit</td>
+        <td class="us">Neutral — audits every channel against your ledger</td>
+      </tr>
+      <tr>
+        <td>Handles "not enough signal"</td>
+        <td>Returns a number regardless</td>
+        <td class="us">Refuses, explains why, and prescribes the fix</td>
+      </tr>
+      <tr>
+        <td>Privacy durability</td>
+        <td>Degrades as tracking/cookies are restricted</td>
+        <td class="us">Structurally resilient — no individual-level tracking</td>
+      </tr>
+      <tr>
+        <td>Incrementality</td>
+        <td>Available in the top, sales-gated tier</td>
+        <td class="us">On the roadmap via geo-holdouts, at every tier's honesty standard</td>
+      </tr>
+      <tr>
+        <td>Dashboards &amp; breadth</td>
+        <td class="us">Mature, polished, wide integrations, mobile app, AI assistant</td>
+        <td>Focused on measurement; lighter on general reporting</td>
+      </tr>
+      <tr>
+        <td>Real-time operational view</td>
+        <td class="us">Excellent — a fast daily cockpit</td>
+        <td>Weekly measurement cadence, not a live dashboard</td>
+      </tr>
+      <tr>
+        <td>Entry price for measurement</td>
+        <td>Modeling on a mid paid tier; incrementality at the top</td>
+        <td class="us">Honest ledger from the entry tier; measurement one step up</td>
+      </tr>
+      <tr>
+        <td>Sales process</td>
+        <td>Higher tiers involve sales</td>
+        <td class="us">Self-serve, no sales call</td>
+      </tr>
+    </table>
+  </section>
+
+  <section>
+    <span class="station" aria-hidden="true">05</span>
+    <div class="fair">
+      <h2>Where Triple Whale is genuinely ahead</h2>
+      <ul>
+        <li>Polish and maturity — a beautiful, battle-tested interface with years of iteration behind it.</li>
+        <li>A fast real-time cockpit for daily ecommerce operations, plus a strong mobile app.</li>
+        <li>Breadth — an AI assistant, surveys, forecasting, and far wider integrations than Shopify plus the ad platforms.</li>
+        <li>A generous free reporting tier if a dashboard is all you need.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <span class="station" aria-hidden="true">06</span>
+    <h2>Where Plumbline is different</h2>
+    <p class="sub">Four things that don't have an equivalent in a pixel-based dashboard, at any tier.</p>
+    <div class="wedges">
+      <div class="wedge">
+        <div class="step">01 · NEUTRALITY</div>
+        <h3>It audits, it doesn't sell the claim</h3>
+        <p>Pixel attribution is only as good as pixel coverage — and the pixel is the vendor's
+        own asset. Plumbline anchors to your Shopify order ledger, the number no pixel or
+        platform can inflate.</p>
+      </div>
+      <div class="wedge">
+        <div class="step">02 · OUTCOME ANCHOR</div>
+        <h3>Real revenue, not stitched conversions</h3>
+        <p>Multi-touch attribution still assigns credit for conversions across touchpoints.
+        Plumbline measures against merchandise net revenue from actual orders — the outcome
+        every channel shares and none can game.</p>
+      </div>
+      <div class="wedge">
+        <div class="step">03 · THE REFUSAL</div>
+        <h3>Honest about what it can't know</h3>
+        <p>Every number ships with an interval, and the engine says "insufficient signal" when
+        history is too short, spend too flat, or channels too collinear — then tells you how to
+        fix it. That refusal is the product.</p>
+      </div>
+      <div class="wedge">
+        <div class="step">04 · DURABILITY</div>
+        <h3>It doesn't decay with privacy</h3>
+        <p>No user-level tracking means no erosion when Apple, Google, or an ad blocker changes
+        the rules. Aggregate spend plus your own revenue is a cleaner, more durable data story.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <span class="station" aria-hidden="true">07</span>
+    <h2>Which one should you use?</h2>
+    <p class="sub">Often the honest answer is "both, for different jobs."</p>
+    <div class="who-should">
+      <div class="pick">
+        <h3>Reach for Triple Whale when…</h3>
+        <p>You want a polished daily operations dashboard, real-time blended numbers across
+        many tools, a mobile app, and reporting breadth — and you're comfortable that
+        attribution credit comes from a tracking pixel.</p>
+      </div>
+      <div class="pick us">
+        <h3>Reach for Plumbline when…</h3>
+        <p>You need to decide where next month's budget goes and want a neutral read on which
+        channels actually drive revenue — measured against your own orders, honest about
+        uncertainty, and affordable before you're an enterprise account.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-band" style="border-bottom:0;">
+    <span class="station" aria-hidden="true">08</span>
+    <h2>See your real blended number in the first session</h2>
+    <p>Connect your store and Plumbline shows what your orders actually support — and tells you,
+    honestly, whether your data can carry a channel recommendation yet.</p>
+    <a class="go" href="/partners.html">Get early access</a>
+    <a class="sec" href="/">Back to Plumbline home</a>
+    <p class="disclaimer">Comparison is Plumbline's own, based on Triple Whale's publicly
+    available product and pricing information as of July 2026. Triple Whale's plans, features,
+    and pricing are set by Triple Whale and may change; check their site for current details.
+    Triple Whale is a trademark of its respective owner and is not affiliated with Plumbline Labs.</p>
+  </section>
+
+  <footer>
+    <p>Plumbline Labs · <a href="/demo.html">Example store</a> ·
+    <a href="/partners.html">Design partners</a> ·
+    <a href="/data-use.html">How we use your data</a> ·
+    <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a> ·
+    <a href="/dpa.html">DPA</a> ·
+    <a href="https://app.plumblinelabs.com/">Sign in</a></p>
+    <p style="margin-top:6px"><span class="foot-bob" aria-hidden="true"></span>True vertical, for ad budgets.</p>
+  </footer>
+</div>
+</body>
+</html>
